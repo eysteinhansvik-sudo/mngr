@@ -2,1347 +2,1717 @@
 <html lang="nb">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Namdal Manager</title>
-    <!--
-    meta:
-      title: "Namdal Manager 2026"
-      description: "Ta over en lokalklubb i Namdalen! Kjøp spillere, bygg kiosk og sikre opprykket i denne fotballsimulatoren."
-      created_date: "2026-10-27"
-      source: "Amedia"
-      risks: "Kjører i nettleseren med nettsky-lagring. Avhengig av at bruker tillater informasjonskapsler for å huske pålogging."
-      responsibility: "Ansvarlig redaktør/avisa er ansvarlig for publisert redaksjonell kode."
-    -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Karsk & kontringer - Retrofotball fra Namdalen</title>
+    <!-- Google Fonts for ekte retro FM og 90-talls avislook -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=Playfair+Display:ital,wght@0,700;1,600&family=Share+Tech+Mono&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* CSS Variabler */
         :root {
-            --primary: #BE0064;
-            --accent: #004E46;
-            --surface: #EBDCD7;
-            --text: #1a1a1a;
-            --white: #FFFFFF;
-            --danger: #dc2626;
-            --success: #16a34a;
+            --fm-bg: #070f1e;
+            --fm-dark: #0c1a30;
+            --fm-panel: #11223e;
+            --fm-panel-border: #1d355d;
+            --fm-pitch: #1b4d24;
+            --fm-pitch-lines: rgba(255, 255, 255, 0.4);
+            --fm-gold: #f59e0b;
+            --fm-cyan: #38bdf8;
+            --fm-green: #22c55e;
+            --fm-red: #ef4444;
+            --fm-text: #e2e8f0;
+            --fm-muted: #94a3b8;
+            --news-paper: #fefce8;
+            --news-ink: #1c1917;
+            --news-border: #d97706;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
-            font-family: "Instrument Sans", system-ui, -apple-system, sans-serif;
-            background-color: var(--surface);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--fm-bg);
+            color: var(--fm-text);
+            line-height: 1.5;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
+            background-image: radial-gradient(#152642 1px, transparent 1px);
+            background-size: 24px 24px;
         }
 
-        /* Tekst og Typografi */
-        .text-3xl { font-size: 1.875rem; line-height: 2.25rem; }
-        .text-2xl { font-size: 1.5rem; line-height: 2rem; }
-        .text-xl { font-size: 1.25rem; line-height: 1.75rem; }
-        .text-lg { font-size: 1.125rem; line-height: 1.75rem; }
-        .text-sm { font-size: 0.875rem; line-height: 1.25rem; }
-        .font-bold { font-weight: 700; }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        
-        /* Farger */
-        .text-white { color: var(--white); }
-        .text-primary { color: var(--primary); }
-        .text-danger { color: var(--danger); }
-        .text-success { color: var(--success); }
-        .bg-white { background-color: var(--white); }
-        .bg-pink-100 { background-color: #fce7f3; }
-        .bg-red-100 { background-color: #fee2e2; }
-
-        /* Avstander */
-        .mb-2 { margin-bottom: 0.5rem; }
-        .mb-4 { margin-bottom: 1rem; }
-        .mb-6 { margin-bottom: 1.5rem; }
-        .mt-2 { margin-top: 0.5rem; }
-        .mt-4 { margin-top: 1rem; }
-        .mt-6 { margin-top: 1.5rem; }
-        .my-2 { margin-top: 0.5rem; margin-bottom: 0.5rem; }
-        .my-4 { margin-top: 1rem; margin-bottom: 1rem; }
-        .p-4 { padding: 1rem; }
-        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
-        .px-4 { padding-left: 1rem; padding-right: 1rem; }
-        .pl-5 { padding-left: 1.25rem; }
-        
-        /* Layout */
-        .w-full { width: 100%; }
-        .rounded { border-radius: 0.25rem; }
-        .hidden { display: none !important; }
-        .block { display: block; }
-        .flex { display: flex; }
-        .flex-col { flex-direction: column; }
-        .flex-1 { flex: 1 1 0%; }
-        .justify-center { justify-content: center; }
-        .justify-between { justify-content: space-between; }
-        .items-center { align-items: center; }
-        .gap-2 { gap: 0.5rem; }
-        .gap-4 { gap: 1rem; }
-        .grid { display: grid; }
-        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-        .overflow-x-auto { overflow-x: auto; }
-        .list-disc { list-style-type: disc; }
-        .opacity-50 { opacity: 0.5; }
-        .cursor-pointer { cursor: pointer; }
-
-        @media (min-width: 768px) {
-            .md\:grid-cols-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-            .md\:flex-row { flex-direction: row; }
-            .md\:mb-0 { margin-bottom: 0; }
-            .md\:text-right { text-align: right; }
+        /* Retro pikselerte rammer og FM-header */
+        .retro-box {
+            background-color: var(--fm-panel);
+            border: 2px solid var(--fm-panel-border);
+            box-shadow: 3px 3px 0 #00000088;
+            border-radius: 6px;
         }
 
-        /* Skjermer */
-        .screen {
-            display: none;
-            padding: 1rem;
-            max-width: 800px;
-            margin: 0 auto;
+        .mono {
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .retro-title {
+            font-family: 'Chakra Petch', sans-serif;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .container {
             width: 100%;
-            box-sizing: border-box;
+            max-width: 1080px;
+            margin: 0 auto;
+            padding: 12px;
+            flex: 1;
         }
-        .screen.active { display: block; }
 
-        /* Komponenter */
-        .team-card {
-            background-color: var(--white);
-            color: var(--text);
-            border: 2px solid #ccc;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        /* Topplinje / Klubbstatus */
+        .header-bar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--fm-dark);
+            border-bottom: 3px solid var(--fm-gold);
+            padding: 12px 18px;
+            gap: 12px;
         }
-        .team-card:hover, .team-card:focus {
-            border-color: var(--primary);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(190, 0, 100, 0.2);
+
+        .brand-zone {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge-tag {
+            background: var(--fm-gold);
+            color: #000;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-family: 'Chakra Petch', sans-serif;
+        }
+
+        .stats-pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .stat-pill {
+            background: #091322;
+            border: 1px solid var(--fm-panel-border);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Navigasjonsknapper (Mobiltilpasset Grid) */
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 8px;
+            margin: 12px 0 16px 0;
+        }
+
+        .nav-btn {
+            background: #132747;
+            color: #fff;
+            border: 1px solid var(--fm-cyan);
+            padding: 10px 8px;
+            border-radius: 4px;
+            font-family: 'Chakra Petch', sans-serif;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 2px 2px 0 #000;
+            text-align: center;
+            min-height: 44px; /* God touch-target */
+        }
+
+        .nav-btn:hover, .nav-btn:focus-visible {
+            background: var(--fm-cyan);
+            color: #000;
             outline: none;
         }
-        .team-card-logo { font-size: 2.5rem; margin-bottom: 0.5rem; }
-        .team-card-name { font-weight: bold; font-size: 1.1rem; }
 
-        button {
-            background-color: var(--primary);
-            color: var(--white);
-            border: none;
-            border-radius: 0.25rem;
-            padding: 0.75rem 1rem;
-            font-weight: bold;
+        .nav-btn.active {
+            background: var(--fm-gold);
+            color: #000;
+            border-color: #d97706;
+        }
+
+        /* Store action knapper */
+        .btn-action {
+            background: var(--fm-green);
+            color: #052e16;
+            font-weight: 800;
+            border: 2px solid #16a34a;
+            padding: 12px 20px;
+            border-radius: 6px;
+            font-size: 1.1rem;
             cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        button:hover, button:focus {
-            background-color: #90004b;
-            outline: 2px solid var(--text);
-            outline-offset: 2px;
-        }
-        .btn-secondary { background-color: var(--accent); }
-        .btn-secondary:hover { background-color: #003630; }
-        .btn-danger { background-color: var(--danger); }
-        .btn-danger:hover { background-color: #b91c1c; }
-        .btn-success { background-color: var(--success); }
-        .btn-success:hover { background-color: #15803d; }
-        button:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .player-list { list-style: none; padding: 0; margin: 0; }
-        .player-item {
-            background: var(--white);
-            border: 1px solid #ccc;
-            border-radius: 0.25rem;
-            padding: 0.75rem;
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .player-info { flex-grow: 1; }
-        .player-stats { font-size: 0.85rem; color: #555; }
-        .selected-player { border-color: var(--primary) !important; border-width: 2px !important; background-color: #fce7f3 !important; }
-        
-        .facility-item {
-            background: var(--white);
-            border: 2px solid #ccc;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--white);
-            padding: 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-        }
-
-        .match-log {
-            background: var(--white);
-            border: 1px solid #ccc;
-            border-radius: 0.5rem;
-            height: 300px;
-            overflow-y: auto;
-            padding: 1rem;
-            font-family: monospace;
-            margin-bottom: 1rem;
-        }
-        
-        .news-feed {
-            background: var(--white);
-            border: 1px solid #ccc;
-            border-left: 4px solid var(--primary);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-top: 1rem;
-            font-size: 0.95rem;
-        }
-        .news-feed h3 { margin-top: 0; color: var(--primary); font-size: 1.1rem; }
-        .news-feed ul { padding-left: 1.5rem; margin-bottom: 0; }
-        .news-feed li { margin-bottom: 0.5rem; }
-
-        table {
+            box-shadow: 0 4px 0 #15803d, 0 6px 12px rgba(0,0,0,0.4);
+            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            font-family: 'Chakra Petch', sans-serif;
+            text-transform: uppercase;
             width: 100%;
-            border-collapse: collapse;
-            background: var(--white);
-            border-radius: 0.5rem;
+            min-height: 48px;
+        }
+
+        .btn-action:hover, .btn-action:focus-visible {
+            background: #4ade80;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 0 #15803d, 0 8px 16px rgba(0,0,0,0.5);
+            outline: none;
+        }
+
+        .btn-action:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #15803d;
+        }
+
+        /* 2D Gressmatte / Taktikktavle */
+        .pitch-container {
+            background: linear-gradient(to bottom, #1b4d24 0%, #1e592a 50%, #1b4d24 100%);
+            border: 3px solid #2e7d32;
+            border-radius: 8px;
+            padding: 16px 10px;
+            position: relative;
+            min-height: 440px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
             overflow: hidden;
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.5), 3px 3px 0 #000;
+            margin-top: 10px;
         }
-        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #eee; }
-        th { background-color: var(--accent); color: var(--white); }
 
-        fieldset {
-            border: 2px solid #ccc;
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            background: var(--white);
+        /* Banemerking */
+        .pitch-midline {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            height: 2px;
+            background: var(--fm-pitch-lines);
+            transform: translateY(-50%);
         }
-        legend { font-weight: bold; padding: 0 0.5rem; background: var(--surface); border-radius: 0.25rem; }
-        
-        select { padding: 0.5rem; border-radius: 0.25rem; border: 1px solid #ccc; font-size: 1rem; width: 100%; }
 
-        .clock-display { font-size: 2rem; font-weight: bold; text-align: center; color: var(--primary); margin: 1rem 0; }
-        header { background-color: var(--primary); color: var(--white); padding: 1rem; text-align: center; }
-        
-        .toast-msg {
-            position: fixed; bottom: 20px; right: 20px; padding: 10px 20px;
-            border-radius: 5px; display: none; z-index: 9999; font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); color: var(--white);
+        .pitch-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 90px;
+            height: 90px;
+            border: 2px solid var(--fm-pitch-lines);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
         }
-        .toast-success { background-color: var(--success); }
-        .toast-danger { background-color: var(--danger); }
-        
-        .award-box {
-            background-color: var(--white);
-            border: 2px solid var(--accent);
-            border-radius: 0.5rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
+
+        .pitch-box-top, .pitch-box-bot {
+            position: absolute;
+            width: 120px;
+            height: 45px;
+            border: 2px solid var(--fm-pitch-lines);
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .pitch-box-top { top: 0; border-top: none; }
+        .pitch-box-bot { bottom: 0; border-bottom: none; }
+
+        .pitch-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 2;
+            margin: 6px 0;
+            width: 100%;
+        }
+
+        .player-disc {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: transform 0.15s ease;
+        }
+
+        .player-disc:hover, .player-disc:focus-visible {
+            transform: scale(1.1);
+            outline: none;
+        }
+
+        .disc-shirt {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--fm-cyan);
+            color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border: 2px solid #fff;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.6);
+            position: relative;
+        }
+
+        .disc-shirt.keeper {
+            background: #f97316 !important;
+            color: #fff !important;
+            border-color: #fdba74 !important;
+        }
+
+        .disc-shirt.injured {
+            border-color: var(--fm-red) !important;
+            background: #7f1d1d !important;
+            color: #fca5a5 !important;
+            animation: pulse-red 1.5s infinite;
+        }
+
+        @keyframes pulse-red {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        .disc-name {
+            background: rgba(0, 0, 0, 0.85);
+            color: #fff;
+            font-size: 0.65rem;
+            padding: 2px 4px;
+            border-radius: 3px;
+            margin-top: 4px;
+            white-space: nowrap;
+            max-width: 70px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            border: 1px solid rgba(255,255,255,0.2);
             text-align: center;
         }
 
-        /* Loading spinner */
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            border-left-color: var(--primary);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 1rem auto;
+        /* Tabeller og lister (Mobiltilpasset) */
+        .table-responsive-wrapper {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            min-width: 320px; /* Sikrer at innhold ikke klemmer seg til uleselighet */
+        }
+
+        .table-custom th {
+            background: #0d1e38;
+            color: var(--fm-cyan);
+            font-family: 'Chakra Petch', sans-serif;
+            text-align: left;
+            padding: 8px 10px;
+            border-bottom: 2px solid var(--fm-panel-border);
+            white-space: nowrap;
+        }
+
+        .table-custom td {
+            padding: 7px 10px;
+            border-bottom: 1px solid #1a2f4c;
+            white-space: nowrap;
+        }
+
+        .table-custom tr:hover {
+            background: #142845;
+        }
+
+        /* Batteri / Kondisjonsindikator */
+        .battery-bar {
+            width: 40px;
+            height: 10px;
+            background: #1e293b;
+            border: 1px solid #475569;
+            border-radius: 2px;
+            display: inline-block;
+            vertical-align: middle;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .battery-level {
+            height: 100%;
+            transition: width 0.3s ease;
+        }
+
+        /* Namdalsavisa papirbørs */
+        .newspaper-card {
+            background: var(--news-paper);
+            color: var(--news-ink);
+            border-top: 4px solid var(--news-border);
+            padding: 16px;
+            box-shadow: 3px 3px 0 #000;
+            border-radius: 3px;
+        }
+
+        .newspaper-header {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border-bottom: 2px solid #292524;
+            padding-bottom: 4px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .news-item {
+            font-size: 0.88rem;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #a8a29e;
+            line-height: 1.4;
+        }
+
+        .news-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: #e11d48;
+            color: #fff;
+            padding: 1px 5px;
+            border-radius: 2px;
+            margin-right: 6px;
+            display: inline-block;
+        }
+
+        /* Kampskjerm & Scoreboard */
+        .match-board {
+            background: #020617;
+            border: 2px solid var(--fm-gold);
+            padding: 14px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+            margin-bottom: 14px;
+        }
+
+        .match-score {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 2.2rem;
+            color: #facc15;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
+            margin: 0 10px;
+        }
+
+        .match-log-box {
+            background: #050b14;
+            border: 1px solid var(--fm-panel-border);
+            padding: 10px;
+            border-radius: 4px;
+            height: 240px;
+            overflow-y: auto;
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.85rem;
+            display: flex;
+            flex-direction: column-reverse;
+        }
+
+        .log-entry {
+            margin: 4px 0;
+            padding: 4px 6px;
+            border-radius: 3px;
+            background: #0c182a;
+            border-left: 3px solid var(--fm-cyan);
+        }
+
+        .log-entry.goal {
+            border-left-color: var(--fm-gold);
+            background: #1c2612;
+            color: #fef08a;
+            font-weight: bold;
+        }
+
+        .log-entry.injury {
+            border-left-color: var(--fm-red);
+            background: #2a1114;
+            color: #fca5a5;
+        }
+
+        /* Form elementer */
+        select, input[type="text"] {
+            background: #0a1728;
+            color: #fff;
+            border: 1px solid var(--fm-cyan);
+            padding: 8px 10px;
+            border-radius: 4px;
+            font-family: inherit;
+            width: 100%;
+            min-height: 44px; /* Mobilvennlig touch */
+        }
+
+        /* Klubblister på oppstartskjerm (Mobiltilpasset) */
+        .club-grid-picker {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(min(100%, 160px), 1fr));
+            gap: 10px;
+            max-height: 480px;
+            overflow-y: auto;
+            padding: 6px;
+            margin: 16px 0 20px 0;
+            background: #050d18;
+            border: 1px solid var(--fm-panel-border);
+            border-radius: 6px;
+        }
+
+        .club-card-select {
+            background: #0c1a2f;
+            border: 2px solid var(--fm-panel-border);
+            border-radius: 6px;
+            padding: 10px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            position: relative;
+        }
+
+        .club-card-select:hover {
+            border-color: var(--fm-cyan);
+            background: #112644;
+            transform: translateY(-2px);
+        }
+
+        .club-card-select.selected {
+            border-color: var(--fm-gold);
+            background: #182f54;
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        /* Responsive Grid Wrappers for seksjoner */
+        .responsive-grid-2col {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+            gap: 14px;
+        }
+
+        /* Footer */
+        .footer-note {
+            text-align: center;
+            padding: 14px;
+            font-size: 0.8rem;
+            color: var(--fm-muted);
+            border-top: 1px solid #162a45;
+            margin-top: 20px;
+        }
+
+        /* Hjelpeklasser */
+        .hidden { display: none !important; }
+        .text-gold { color: var(--fm-gold); }
+        .text-green { color: var(--fm-green); }
+        .text-red { color: var(--fm-red); }
+        .text-cyan { color: var(--fm-cyan); }
     </style>
 </head>
 <body>
 
-    <header>
-        <h1 class="text-2xl font-bold">Namdal Manager 2026</h1>
+    <!-- Header bar med klubbinfo og økonomi -->
+    <header class="header-bar">
+        <div class="brand-zone">
+            <span class="mono" style="font-size: 1.3rem; font-weight: 700; color: #fff;">⚽ KARSK & KONTRINGER</span>
+            <span class="badge-tag">Retrofotball fra Namdalen</span>
+        </div>
+        <div id="topStatsGroup" class="stats-pill-group hidden">
+            <div class="stat-pill"><span id="headerClubLogo">🐝</span> <strong id="headerClubName">Borussia Bergsmo</strong></div>
+            <div class="stat-pill">💰 Kasse: <strong id="headerCash" class="mono text-green">1 500 000 kr</strong></div>
+            <div class="stat-pill">📅 Runde: <strong id="headerRound" class="mono text-gold">1 / 14</strong></div>
+        </div>
     </header>
 
-    <main id="app-container">
-        <!-- SCREEN: Velg Lag eller Last inn -->
-        <section id="screen-start" class="screen active">
-            <!-- Vises mens vi sjekker skyen -->
-            <div id="start-loading" class="text-center py-6">
-                <div class="spinner"></div>
-                <p class="font-bold text-lg">Låser opp klubbhuset...</p>
-                <p class="text-sm">Ser etter lagrede spill</p>
-            </div>
-
-            <!-- Vises hvis det finnes et lagret spill -->
-            <div id="start-save-found" class="hidden text-center mb-6 p-6 border-2 border-primary rounded bg-white">
-                <h2 class="font-bold text-2xl mb-2 text-primary">Velkommen tilbake!</h2>
-                <p class="mb-6 text-lg">Du har et påbegynt spill med <strong id="save-team-name"></strong>.</p>
-                <div class="flex flex-col gap-4 max-w-sm mx-auto">
-                    <button id="btn-load-game" class="btn-success text-lg py-3">Fortsett spillet</button>
-                    <button id="btn-ignore-save" class="btn-danger opacity-50">Slett og start på nytt</button>
-                </div>
-            </div>
-
-            <!-- Vises hvis det ikke finnes lagring (eller bruker vil starte på nytt) -->
-            <div id="start-new-game" class="hidden">
-                <h2 class="text-xl font-bold mb-4 text-center">Velg din klubb</h2>
-                <p class="mb-6 text-center">Ta over et namdalsk lag og før dem til topps. Bygg deg opp fra bunnen, kjøp stjerner og legg taktikken!</p>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="team-selection"></div>
-            </div>
-        </section>
-
-        <!-- SCREEN: Klubbhus -->
-        <section id="screen-dashboard" class="screen">
-            <div class="top-bar flex-col md:flex-row gap-4">
-                <div>
-                    <h2 class="text-xl font-bold" id="dash-team-name">Lagnavn</h2>
-                    <p>Budsjett: <span id="dash-budget" class="font-bold text-success"></span> kr</p>
-                </div>
-                <div class="text-center md:text-right">
-                    <p class="mb-2">Serierunde: <span id="dash-round" class="font-bold"></span> / 30</p>
-                    <button id="btn-save-game" class="btn-success text-sm py-2 px-4">💾 Lagre spillet nå</button>
-                </div>
-            </div>
-
-            <div class="dashboard-grid">
-                <button id="nav-squad" class="btn-secondary">Stall & Taktikk</button>
-                <button id="nav-transfer" class="btn-secondary">Overganger</button>
-                <button id="nav-facilities" class="btn-secondary">Klubbdrift</button>
-                <button id="nav-league" class="btn-secondary">Tabell & Resultater</button>
-            </div>
+    <main class="container">
+        <!-- 1. VELKOMST & KLUBBVELGER -->
+        <section id="screenIntro" class="retro-box" style="padding: 24px; text-align: center; margin-top: 20px;">
+            <h1 class="retro-title text-gold" style="font-size: 2rem; margin-bottom: 8px; letter-spacing: 1px;">VELKOMMEN TIL DIVISJON NAMDAL</h1>
+            <p style="color: var(--fm-muted); max-width: 680px; margin: 0 auto 16px auto; font-size: 0.95rem;">
+                Lukta av nyslått myrgress, rykende karsk på termos og svidde kasserte piggdekk i skogkanten. Velg klubben du vil lede til heder, ære og opprykk i distriktet!
+            </p>
             
-            <div id="news-feed-container" class="news-feed hidden">
-                <h3>🗞️ Namdalsavisa Sporten</h3>
-                <ul id="news-feed-list"></ul>
-            </div>
-
-            <fieldset class="mt-6 text-center">
-                <legend>Neste kamp</legend>
-                <h3 class="text-2xl font-bold my-2" id="next-match-label">Motstander</h3>
-                <div class="flex flex-col sm:flex-row justify-center gap-4 my-4">
-                    <label><input type="radio" name="speed" value="1000" checked> Normalt tempo</label>
-                    <label><input type="radio" name="speed" value="100"> Raskt (Hurtigspoling)</label>
+            <div style="text-align: left; margin: 0 auto; max-width: 960px;">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; flex-wrap: wrap;">
+                    <span style="font-size: 0.85rem; font-weight: 700; color: var(--fm-cyan);" class="retro-title">VELG DIN KLUBB (KLIKK PÅ ET LAG):</span>
+                    <span style="font-size: 0.75rem; color: var(--fm-muted);" class="mono">16 KLUBBER TILGJENGELIG</span>
                 </div>
-                <button id="btn-play-match" class="w-full text-lg">Spill kamp!</button>
-            </fieldset>
-
-            <button id="btn-reset-game" class="btn-danger mt-6 w-full opacity-50 text-sm">Start sesongen på nytt (og slett lagring)</button>
-            <div id="reset-confirm" class="hidden mt-2 p-4 bg-red-100 border-danger rounded text-center">
-                <p class="mb-2 text-danger font-bold">Er du sikker? Du mister hele laget ditt og lagringen slettes!</p>
-                <div class="flex gap-2 justify-center">
-                    <button id="btn-confirm-reset" class="btn-danger">Ja, slett alt</button>
-                    <button id="btn-cancel-reset" class="btn-secondary">Avbryt</button>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCREEN: Klubbdrift (Facilities) -->
-        <section id="screen-facilities" class="screen">
-            <div class="top-bar flex-col md:flex-row gap-4">
-                <h2>Klubbdrift & Fasiliteter</h2>
-                <button id="btn-back-facilities">Tilbake</button>
-            </div>
-            <div class="bg-white p-4 rounded mb-4 text-center">
-                <p>Budsjett: <span id="facility-budget" class="font-bold text-success"></span> kr</p>
-            </div>
-            
-            <p class="mb-4">Oppgrader klubben for å tjene mer penger og utvikle spillerne raskere!</p>
-            <div id="facilities-list"></div>
-        </section>
-
-        <!-- SCREEN: Stall og Taktikk -->
-        <section id="screen-squad" class="screen">
-            <div class="top-bar flex-col md:flex-row gap-4">
-                <h2>Stall & Taktikk</h2>
-                <button id="btn-back-squad">Tilbake</button>
-            </div>
-
-            <fieldset>
-                <legend>Taktikk</legend>
-                <button id="btn-auto-pick" class="btn-secondary mb-4 w-full">Automatisk beste ellever</button>
                 
-                <div class="flex flex-col md:flex-row gap-4">
-                    <div class="flex-1">
-                        <label for="formation" class="block font-bold">Formasjon:</label>
-                        <select id="formation">
-                            <option value="4-4-2">4-4-2 (Klassisk Namdal)</option>
-                            <option value="4-3-3">4-3-3 (Offensiv)</option>
-                            <option value="5-4-1">5-4-1 (Solid bakover)</option>
-                        </select>
+                <div id="clubGridContainer" class="club-grid-picker">
+                    <!-- Fylles med alle 16 klubbkort i JS -->
+                </div>
+
+                <div id="selectedClubDetail" class="retro-box" style="padding: 14px; background: #081322; border-color: var(--fm-gold); margin-bottom: 18px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <span id="detailLogo" style="font-size: 2.4rem;">🐝</span>
+                        <div>
+                            <h3 id="detailName" class="retro-title text-gold" style="font-size: 1.25rem;">Borussia Bergsmo</h3>
+                            <p id="detailDesc" style="font-size: 0.82rem; color: #cbd5e1; max-width: 520px;"></p>
+                        </div>
                     </div>
-                    <div class="flex-1">
-                        <label for="focus" class="block font-bold">Fokus:</label>
-                        <select id="focus">
-                            <option value="normal">Balansert</option>
-                            <option value="attack">Full angrep (Hawaii-fotball)</option>
-                            <option value="defend">Kynisk forsvar (Parker bussen)</option>
-                        </select>
+                    <div style="font-size: 0.82rem; text-align: right;" class="mono">
+                        🏟️ <span id="detailStadium" class="text-cyan">Karsk-Parken</span><br>
+                        ⚡ Omdømme: <strong id="detailRep" class="text-green">68 / 100</strong>
                     </div>
                 </div>
-            </fieldset>
-
-            <h3>Din Spillertropp</h3>
-            <div class="flex flex-col gap-4">
-                <fieldset>
-                    <legend>Startellever (11)</legend>
-                    <ul class="player-list" id="squad-starters-list"></ul>
-                </fieldset>
-                <fieldset>
-                    <legend>Benken</legend>
-                    <ul class="player-list" id="squad-bench-list"></ul>
-                </fieldset>
             </div>
+
+            <button class="btn-action" style="max-width: 360px;" onclick="startGame()">SPARK I GANG KARRIEREN! 🚀</button>
         </section>
 
-        <!-- SCREEN: Overganger -->
-        <section id="screen-transfer" class="screen">
-            <div class="top-bar flex-col md:flex-row gap-4">
-                <h2>Overgangsmarked</h2>
-                <button id="btn-back-transfer">Tilbake</button>
-            </div>
-            
-            <div class="bg-white p-4 rounded mb-4 text-center">
-                <p>Budsjett: <span id="transfer-budget" class="font-bold text-success"></span> kr</p>
-            </div>
+        <!-- DASHBOARD & KONTROLLSENTER -->
+        <div id="gameHub" class="hidden">
+            <!-- Navigasjonsmeny -->
+            <nav class="nav-grid">
+                <button class="nav-btn active" onclick="switchTab('dashboard')">🏠 Klubbhuset</button>
+                <button class="nav-btn" onclick="switchTab('tactics')">📋 Taktikktavle</button>
+                <button class="nav-btn" onclick="switchTab('training')">🏃 Treningsfelt</button>
+                <button class="nav-btn" onclick="switchTab('transfers')">🤝 Overganger</button>
+                <button class="nav-btn" onclick="switchTab('facilities')">🚜 Klubbdrift</button>
+                <button class="nav-btn" onclick="switchTab('table')">📊 Tabell</button>
+            </nav>
 
-            <fieldset>
-                <legend>Tilgjengelige spillere</legend>
-                <div class="mb-4">
-                    <label for="market-filter" class="font-bold">Filtrer på posisjon:</label>
-                    <select id="market-filter">
-                        <option value="Alle">Alle posisjoner</option>
-                        <option value="Keeper">Keeper</option>
-                        <option value="Forsvar">Forsvar</option>
-                        <option value="Midtbane">Midtbane</option>
-                        <option value="Angrep">Angrep</option>
-                    </select>
+            <!-- 2. KLUBBHUSET (DASHBOARD) -->
+            <section id="tabDashboard">
+                <div class="responsive-grid-2col">
+                    <!-- Neste kamp & Klargjøring -->
+                    <div class="retro-box" style="padding: 16px;">
+                        <h2 class="retro-title text-cyan" style="font-size: 1.1rem; margin-bottom: 10px;">⚔️ Neste kamp i distriktet</h2>
+                        <div id="nextMatchInfo" style="background: #071222; padding: 12px; border-radius: 4px; border: 1px solid var(--fm-panel-border); text-align: center;">
+                            <div class="mono text-gold" style="font-size: 0.8rem; margin-bottom: 4px;">RUNDE <span id="dashRoundNum">1</span></div>
+                            <div style="font-size: 1.2rem; font-weight: 700; margin-bottom: 6px;" id="dashMatchup">Vertene vs Gjestene</div>
+                            <div style="font-size: 0.8rem; color: var(--fm-muted);" id="dashStadium">Bane</div>
+                        </div>
+
+                        <!-- Speiderrapport -->
+                        <div style="margin-top: 12px; background: #0c1a2e; border-left: 3px solid var(--fm-gold); padding: 10px; border-radius: 3px;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--fm-gold);" class="retro-title">🕵️‍♂️ SPEIDERRAPPORT FRA ARNT MED KIKKERTEN:</div>
+                            <p id="dashScoutText" style="font-size: 0.82rem; margin-top: 4px; color: #cbd5e1;"></p>
+                        </div>
+
+                        <!-- Rådgiver Kåre Slegga -->
+                        <div style="margin-top: 10px; background: #0c1a2e; border-left: 3px solid var(--fm-cyan); padding: 10px; border-radius: 3px;">
+                            <div style="font-size: 0.75rem; font-weight: 700; color: var(--fm-cyan);" class="retro-title">☕ KÅRE «SLEGGA» (ASSISTENT & FORMERTELT-SJEF):</div>
+                            <p id="dashAdvisorText" style="font-size: 0.82rem; margin-top: 4px; color: #cbd5e1;"></p>
+                        </div>
+
+                        <div style="margin-top: 16px;">
+                            <button class="btn-action" onclick="startMatch()">GÅ TIL AVSPARK! ⚡</button>
+                        </div>
+                    </div>
+
+                    <!-- Namdalsavisa Nyheter -->
+                    <div class="newspaper-card">
+                        <div class="newspaper-header">
+                            <span>🗞️ Sportsnyheter fra Namdalsavisa</span>
+                            <span class="mono" style="font-size: 0.75rem; color: #78716c;">LØSSALGSUTGAVE</span>
+                        </div>
+                        <div style="font-size: 0.75rem; font-style: italic; color: #57534e; margin-bottom: 10px;">
+                            Distriktets eneste avis for karsk, kontringer og grasrotfotball.
+                        </div>
+                        <div id="newspaperFeed">
+                            <!-- Fylles dynamisk -->
+                        </div>
+                    </div>
                 </div>
-                <ul class="player-list" id="market-list"></ul>
-            </fieldset>
-        </section>
+            </section>
 
-        <!-- SCREEN: Kampsimulator -->
-        <section id="screen-match" class="screen">
-            <div class="top-bar text-center block">
-                <h2 class="text-3xl font-bold text-primary" id="match-score">0 - 0</h2>
-                <p id="match-teams" class="text-lg">Hjemme vs Borte</p>
-                <div class="clock-display" id="match-clock">00:00</div>
-            </div>
+            <!-- 3. TAKTIKKTAVLE & STALL -->
+            <section id="tabTactics" class="hidden">
+                <div class="responsive-grid-2col">
+                    <!-- 2D Banekart -->
+                    <div class="retro-box" style="padding: 14px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                            <h2 class="retro-title text-gold" style="font-size: 1.1rem;">🏟️ Taktikktavle</h2>
+                            <button onclick="autoPickBestEleven()" style="background: #1e3a8a; color: #fff; border: 1px solid var(--fm-cyan); padding: 6px 10px; border-radius: 3px; font-size: 0.75rem; cursor: pointer; min-height: 38px;">⚡ Auto beste ellever</button>
+                        </div>
 
-            <div id="match-log" class="match-log" aria-live="polite"></div>
+                        <!-- Formasjon & Taktikkvelger -->
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; margin-bottom: 12px;">
+                            <div>
+                                <label style="font-size: 0.75rem; color: var(--fm-cyan); font-weight: bold;">FORMASJON:</label>
+                                <select id="tacticFormation" onchange="updateFormation()">
+                                    <option value="4-4-2">4-4-2 (Klassisk trønderdrillo)</option>
+                                    <option value="4-3-3">4-3-3 (Bredde & vinger)</option>
+                                    <option value="3-5-2">3-5-2 (Midtbanetung)</option>
+                                    <option value="4-5-1">4-5-1 (Betong & kaffe)</option>
+                                    <option value="5-4-1">5-4-1 (Parkert traktor)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label style="font-size: 0.75rem; color: var(--fm-cyan); font-weight: bold;">TAKTIKK-FOKUS:</label>
+                                <select id="tacticFocus" onchange="updateTacticFocus()">
+                                    <option value="Klassisk kontring">Klassisk kontring</option>
+                                    <option value="Høyt press">Høyt press & hetsing</option>
+                                    <option value="Drillo-fotball">Drillo-fotball (Dælj & løp)</option>
+                                    <option value="Tiki-Taka">Tiki-Taka på myrgress</option>
+                                    <option value="Parkere traktoren">Parkere traktoren bak</option>
+                                </select>
+                            </div>
+                        </div>
 
-            <div class="flex flex-col md:flex-row gap-2">
-                <button id="btn-sub-tactics" class="flex-1 btn-secondary">Gjør bytte / Endre taktikk</button>
-                <button id="btn-continue-match" class="flex-1 btn-success hidden">Fortsett kampen</button>
-            </div>
-            <button id="btn-finish-match" class="w-full mt-4 hidden text-lg">Gå til resultatene</button>
-        </section>
+                        <div id="tacticProsCons" style="font-size: 0.78rem; background: #071324; padding: 8px; border-radius: 4px; border-left: 2px solid var(--fm-cyan);"></div>
 
-        <!-- SCREEN: Taktikk & Bytter under kamp -->
-        <section id="screen-match-tactics" class="screen">
-            <div class="top-bar flex-col md:flex-row gap-4">
-                <h2>Taktikk og Bytter (Kamp satt på pause)</h2>
-                <button id="btn-back-to-match">Tilbake til kampen</button>
-            </div>
-            <fieldset>
-                <legend>Endre kampplan</legend>
-                <div class="flex flex-col md:flex-row gap-4">
-                    <select id="match-formation" class="flex-1">
-                        <option value="4-4-2">4-4-2</option>
-                        <option value="4-3-3">4-3-3</option>
-                        <option value="5-4-1">5-4-1</option>
-                    </select>
-                    <select id="match-focus" class="flex-1">
-                        <option value="normal">Balansert</option>
-                        <option value="attack">Full angrep</option>
-                        <option value="defend">Kynisk forsvar</option>
-                    </select>
+                        <!-- Sjælve Gressmatta -->
+                        <div class="pitch-container" id="pitchBoard">
+                            <div class="pitch-midline"></div>
+                            <div class="pitch-circle"></div>
+                            <div class="pitch-box-top"></div>
+                            <div class="pitch-box-bot"></div>
+
+                            <div class="pitch-row" id="pitchRowFWD"></div>
+                            <div class="pitch-row" id="pitchRowMID"></div>
+                            <div class="pitch-row" id="pitchRowDEF"></div>
+                            <div class="pitch-row" id="pitchRowGK"></div>
+                        </div>
+                    </div>
+
+                    <!-- Spillerstall & Benk -->
+                    <div class="retro-box" style="padding: 14px; display: flex; flex-direction: column;">
+                        <h2 class="retro-title text-cyan" style="font-size: 1.1rem; margin-bottom: 8px;">👥 Troppsoversikt (<span id="squadCount">0</span>)</h2>
+                        <p style="font-size: 0.75rem; color: var(--fm-muted); margin-bottom: 8px;">Klikk på en spiller på banen og deretter på en innbytter for å bytte.</p>
+                        
+                        <div class="table-responsive-wrapper" style="max-height: 540px;">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Pos</th>
+                                        <th>Navn</th>
+                                        <th>Nivå</th>
+                                        <th>Kond</th>
+                                        <th>Status</th>
+                                        <th>Handling</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="squadTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-            </fieldset>
-            <div class="flex flex-col gap-4 mt-4">
-                <fieldset>
-                    <legend>På Banen (11)</legend>
-                    <ul class="player-list" id="match-pitch-list"></ul>
-                </fieldset>
-                <fieldset>
-                    <legend>På Benken</legend>
-                    <ul class="player-list" id="match-bench-list"></ul>
-                </fieldset>
-            </div>
-        </section>
+            </section>
 
-        <!-- SCREEN: Tabell og Resultater -->
-        <section id="screen-league" class="screen">
-            <div class="top-bar flex-col md:flex-row gap-4">
-                <h2>Serietabell</h2>
-                <button id="btn-back-league">Tilbake</button>
-            </div>
-            <div class="overflow-x-auto mb-6">
-                <table id="league-table">
-                    <thead><tr><th>#</th><th>Lag</th><th>K</th><th>V</th><th>U</th><th>T</th><th>Mål</th><th>P</th></tr></thead>
-                    <tbody id="league-table-body"></tbody>
-                </table>
-            </div>
-            <fieldset>
-                <legend>Resultater - Runde <span id="results-round-num"></span></legend>
-                <ul id="results-list" class="list-disc pl-5"></ul>
-            </fieldset>
-        </section>
+            <!-- 4. TRENINGSFELT -->
+            <section id="tabTraining" class="hidden">
+                <div class="retro-box" style="padding: 16px;">
+                    <h2 class="retro-title text-gold" style="font-size: 1.2rem; margin-bottom: 8px;">🏃 Treningsfeltet på Myra</h2>
+                    <p style="font-size: 0.85rem; color: var(--fm-muted); margin-bottom: 14px;">
+                        Her legger du grunnlaget! Hard trening øker lagets evner før neste kamp, mens hvile gjenoppretter slitne kropper.
+                    </p>
 
-        <!-- SCREEN: Tullballen Kåring (Sesongslutt) -->
-        <section id="screen-tullballen" class="screen text-center">
-            <h2 class="text-2xl font-bold mb-6 text-primary">🏆 Sesongslutt: Tullballen-kåringen! 🏆</h2>
-            <p class="mb-4">Etter 30 runder med blod, svette og vaffelrøre har støvet lagt seg. Her er årets prisvinnere i Namdalen!</p>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
-                <div class="award-box">
-                    <h3 class="font-bold text-lg mb-2">⚽ Årets Toppscorer</h3>
-                    <p id="tull-toppscorer">Ingen data</p>
-                </div>
-                <div class="award-box">
-                    <h3 class="font-bold text-lg text-danger mb-2">🟥 Årets Råtass</h3>
-                    <p class="text-sm italic mb-1">Mest kort totalt</p>
-                    <p id="tull-ratass">Ingen data</p>
-                </div>
-                <div class="award-box">
-                    <h3 class="font-bold text-lg text-primary mb-2">🚑 Årets Porselen</h3>
-                    <p class="text-sm italic mb-1">Traktorsporets beste venn</p>
-                    <p id="tull-porselen">Ingen data</p>
-                </div>
-                <div class="award-box">
-                    <h3 class="font-bold text-lg text-success mb-2">🤸 Årets Akrobat</h3>
-                    <p class="text-sm italic mb-1">Flest brassespark</p>
-                    <p id="tull-akrobat">Ingen data</p>
-                </div>
-            </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 16px;">
+                        <button class="nav-btn" onclick="applyTraining('standard')">
+                            <strong>Standardøkt ⚽</strong><br>
+                            <span style="font-size: 0.75rem; color: #cbd5e1;">Jevn økning. Koster 8% kondis.</span>
+                        </button>
+                        <button class="nav-btn" onclick="applyTraining('finishing')">
+                            <strong>Avslutninger 🎯</strong><br>
+                            <span style="font-size: 0.75rem; color: #cbd5e1;">Skuddtrening & måljakt. Koster 12% kondis.</span>
+                        </button>
+                        <button class="nav-btn" onclick="applyTraining('setpiece')">
+                            <strong>Dødball & innkast 📐</strong><br>
+                            <span style="font-size: 0.75rem; color: #cbd5e1;">Faste situasjoner. Koster 6% kondis.</span>
+                        </button>
+                        <button class="nav-btn" onclick="applyTraining('defending')">
+                            <strong>Forsvarsmur 🧱</strong><br>
+                            <span style="font-size: 0.75rem; color: #cbd5e1;">Tette igjen bak. Koster 10% kondis.</span>
+                        </button>
+                        <button class="nav-btn" style="border-color: var(--fm-green);" onclick="applyTraining('recovery')">
+                            <strong>Restitusjon & Karsk ♨️</strong><br>
+                            <span style="font-size: 0.75rem; color: var(--fm-green);">+25% kondisjon & leging av skader!</span>
+                        </button>
+                    </div>
 
-            <button id="btn-finish-season" class="w-full mt-6 text-lg">Slett lagring og start en ny sesong</button>
-        </section>
+                    <div id="trainingFeedback" class="retro-box" style="padding: 12px; background: #071324; border-left: 3px solid var(--fm-gold); margin-bottom: 14px;">
+                        Velg en treningsform over for å sette i gang gutta på feltet.
+                    </div>
 
+                    <h3 class="retro-title text-cyan" style="font-size: 0.95rem; margin-bottom: 6px;">Spillernes dagsform og kondisjon</h3>
+                    <div class="table-responsive-wrapper" style="max-height: 250px;">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Spiller</th>
+                                    <th>Kondisjon</th>
+                                    <th>Rating</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="trainingSquadBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. OVERGANGSMARKED -->
+            <section id="tabTransfers" class="hidden">
+                <div class="retro-box" style="padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+                        <div>
+                            <h2 class="retro-title text-gold" style="font-size: 1.2rem;">🤝 Overgangsmarkedet i Distriktet</h2>
+                            <p style="font-size: 0.85rem; color: var(--fm-muted);">Forsterk stallen med lokale råtasser og stjernespillere.</p>
+                        </div>
+                        <div class="stat-pill" style="border-color: var(--fm-green); font-size: 0.95rem;">
+                            💰 Klubbkasse: <strong id="transfersCashDisplay" class="mono text-green">1 500 000 kr</strong>
+                        </div>
+                    </div>
+
+                    <div id="scoutAbsenceWarning" class="hidden" style="background: #2a1b08; border: 1px solid var(--fm-gold); color: #fde68a; padding: 10px; border-radius: 4px; font-size: 0.82rem; margin-bottom: 12px;">
+                        ✈️ <strong>Sjefsspeideren er på utenlandstokt!</strong> Spillerne på det lokale markedet vurderes nå etter klubbformannens øyemål, så reelt ferdighetsnivå har en viss feilmargin!
+                    </div>
+
+                    <div class="table-responsive-wrapper">
+                        <table class="table-custom">
+                            <thead>
+                                <tr>
+                                    <th>Navn</th>
+                                    <th>Posisjon</th>
+                                    <th>Ferdighet</th>
+                                    <th>Pris</th>
+                                    <th>Handling</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transferTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 6. KLUBBDRIFT & FASILITETER -->
+            <section id="tabFacilities" class="hidden">
+                <div class="retro-box" style="padding: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 14px;">
+                        <h2 class="retro-title text-cyan" style="font-size: 1.2rem;">🚜 Klubbdrift & Fasiliteter</h2>
+                        <div class="stat-pill" style="border-color: var(--fm-green);">
+                            💰 Disp. saldo: <strong id="facilitiesCashDisplay" class="mono text-green">1 500 000 kr</strong>
+                        </div>
+                    </div>
+
+                    <!-- Utenlandsoppdrag Boks -->
+                    <div id="foreignScoutBox" class="retro-box hidden" style="padding: 12px; background: #081a33; border-color: var(--fm-cyan); margin-bottom: 16px;">
+                        <h3 class="retro-title text-gold" style="font-size: 0.95rem;">✈️ Internasjonalt speideroppdrag (Nivå 2+)</h3>
+                        <p id="foreignScoutStatusText" style="font-size: 0.82rem; color: #cbd5e1; margin: 4px 0 8px 0;">
+                            Send speideren til fjerne himmelstrøk for å spore opp et superbillig vidunderbarn. Tar 3 serierunder.
+                        </p>
+                        <button id="btnSendForeignScout" class="nav-btn" style="background: #1e3a8a; width: 100%;" onclick="triggerForeignScoutMission()">Send speider utenlands (120 000 kr) 🌍</button>
+                    </div>
+
+                    <div id="facilitiesList" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 12px;">
+                        <!-- Genereres med JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- 7. TABELL & STATISTIKK -->
+            <section id="tabTable" class="hidden">
+                <div class="retro-box" style="padding: 16px;">
+                    <h2 class="retro-title text-gold" style="font-size: 1.2rem; margin-bottom: 10px;">📊 5. divisjon Namdal - Tabell</h2>
+                    <div class="table-responsive-wrapper">
+                        <table class="table-custom" style="text-align: center;">
+                            <thead>
+                                <tr style="text-align: center;">
+                                    <th style="width: 30px;">#</th>
+                                    <th style="text-align: left;">Klubb</th>
+                                    <th>K</th>
+                                    <th>V</th>
+                                    <th>U</th>
+                                    <th>T</th>
+                                    <th>Mål</th>
+                                    <th>P</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leagueTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 8. LIVESENTER (KAMPSIMULERING) -->
+            <section id="screenMatch" class="hidden">
+                <div class="match-board">
+                    <div class="mono" style="color: var(--fm-cyan); font-size: 0.85rem; margin-bottom: 4px;">MINUTT <span id="matchClock">0</span>'</div>
+                    <div style="display: flex; justify-content: space-around; align-items: center; margin: 8px 0; flex-wrap: wrap;">
+                        <div style="width: 35%; text-align: right;">
+                            <span id="matchHomeLogo" style="font-size: 1.5rem;">🐝</span><br>
+                            <strong id="matchHomeName" style="font-size: 1rem;">Hjemmelag</strong>
+                        </div>
+                        <div class="match-score" id="matchScore">0 - 0</div>
+                        <div style="width: 35%; text-align: left;">
+                            <span id="matchAwayLogo" style="font-size: 1.5rem;">🐟</span><br>
+                            <strong id="matchAwayName" style="font-size: 1rem;">Bortelag</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="match-log-box" id="matchLogContainer">
+                    <div class="log-entry">Dommeren pusser fløyta i grasrota. Gjør klar til avspark i distriktet!</div>
+                </div>
+
+                <div style="margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button id="btnPauseMatch" class="nav-btn" style="flex: 1; min-width: 140px;" onclick="toggleMatchSpeed()">Hurtiggang / Pause ⏩</button>
+                    <button id="btnFinishMatch" class="btn-action hidden" style="flex: 1; min-width: 140px;" onclick="concludeMatch()">Fortsett til Klubbhuset ➔</button>
+                </div>
+            </section>
+        </div>
     </main>
-    
-    <div id="toast" class="toast-msg" role="status">Melding ✔️</div>
 
-<!-- 1. Firebase Modul (Skylagring) -->
-<script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, getDoc, setDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <footer class="footer-note">
+        Brygget med 🥰 og himkok i Namdalen · v_2.1
+    </footer>
 
-    // Henter inn system-variabler
-    const appId = typeof __app_id !== 'undefined' ? __app_id : 'namdal-manager-app';
-    const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : null;
-    const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-
-    let app, db, auth, currentUser;
-
-    window.cloudSaveAvailable = false;
-
-    async function initFirebase() {
-        if (firebaseConfig && Object.keys(firebaseConfig).length > 0) {
-            try {
-                app = initializeApp(firebaseConfig);
-                db = getFirestore(app);
-                auth = getAuth(app);
-
-                // Regel 3: Alltid autentiser før Firestore-kall!
-                if (authToken) {
-                    await signInWithCustomToken(auth, authToken);
-                } else {
-                    await signInAnonymously(auth);
-                }
-                
-                currentUser = auth.currentUser;
-                window.cloudSaveAvailable = true;
-                
-                // Sjekk om det finnes en lagring
-                checkSavedGame();
-                
-            } catch (e) {
-                console.error("Firebase Auth Error:", e);
-                window.triggerStartNewGame(); // Fallback
-            }
-        } else {
-            console.warn("Ingen Firebase konfigurasjon funnet. Spillet kjører uten lagring.");
-            window.triggerStartNewGame(); // Fallback
-        }
-    }
-
-    async function checkSavedGame() {
-        if (!currentUser || !db) return;
-        try {
-            // Regel 1: Streng sti til privat data
-            const saveRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'namdal_manager', 'save_slot_1');
-            const snap = await getDoc(saveRef);
-            
-            if (snap.exists()) {
-                window.promptLoadGame(snap.data());
-            } else {
-                window.triggerStartNewGame();
-            }
-        } catch(e) {
-            console.error("Kunne ikke hente lagring:", e);
-            window.triggerStartNewGame();
-        }
-    }
-
-    // Funksjon for å lagre spillet
-    window.saveGameToCloud = async (gameState) => {
-        if (!currentUser || !db) {
-            window.showToast("⚠️ Kan ikke lagre: Ikke tilkoblet skyen", true);
-            return;
-        }
-        
-        try {
-            window.showToast("⏳ Lagrer...", false);
-            const saveRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'namdal_manager', 'save_slot_1');
-            
-            // Kloner state og gjør om 'Set' til en Array (Firestore støtter ikke 'Set')
-            const stateToSave = { ...gameState };
-            stateToSave.generatedNames = Array.from(gameState.generatedNames);
-            
-            await setDoc(saveRef, stateToSave);
-            window.showToast("💾 Fremdriften din er lagret!");
-        } catch (e) {
-            console.error("Feil ved lagring", e);
-            window.showToast("⚠️ Feil: Klarte ikke lagre spillet", true);
-        }
-    };
-    
-    // Funksjon for å slette lagring
-    window.deleteSaveFromCloud = async () => {
-        if (!currentUser || !db) return;
-        try {
-            const saveRef = doc(db, 'artifacts', appId, 'users', currentUser.uid, 'namdal_manager', 'save_slot_1');
-            await deleteDoc(saveRef);
-        } catch(e) {
-            console.error("Kunne ikke slette lagring", e);
-        }
-    };
-
-    // Starter opp Firebase når siden lastes
-    initFirebase();
-</script>
-
-<!-- 2. Hovedspill Modul -->
-<script>
-    // --- DATA ---
-    const TEAMS = [
-        "Overhalla Betongball", "Real Rørvik", "Namsos Rockers", "Flatanger Eagles", "Bangsund Bangers", 
-        "Dinamo Nærøy", "Lokomotiv Ytter-Vikna", "Leka Backstabbers", "Karran fra Harran", 
-        "Røyrvik Miners", "Grong Spellemannslag", "Hållingen Holy Divers",
-        "Galácticos Otterøya", "Tosenhavn Hotspur", "Abel Villa", "Bayer Bergsmo"
-    ];
-
-    const TEAM_LOGOS = {
-        "Real Rørvik": "👑", "Namsos Rockers": "🎸", "Flatanger Eagles": "🦅", "Bangsund Bangers": "💥",
-        "Dinamo Nærøy": "⚡", "Lokomotiv Ytter-Vikna": "🚂", "Leka Backstabbers": "🔪", "Karran fra Harran": "🚜",
-        "Røyrvik Miners": "⛏️", "Overhalla Betongball": "🧱", "Grong Spellemannslag": "🎻", "Hållingen Holy Divers": "⛪",
-        "Galácticos Otterøya": "🌟", "Tosenhavn Hotspur": "🐓", "Abel Villa": "🏰", "Bayer Bergsmo": "💊"
-    };
-
-    const SURNAMES = [
-        "Skogmo", "Kjøglum", "Grande", "Vollan", "Krokstad", "Bjerkan", "Moa", "Hansen", 
-        "Johansen", "Larsen", "Berg", "Haugen", "Myrvold", "Strand", "Sand", "Hagen", 
-        "Lie", "Holand", "Moen", "Solum", "Seem", "Vågø", "Anti", "Lein", "Buvarp", 
-        "Øie", "Kveli", "Finne", "Dolmen", "Mediaa", "Estil", "Hatland", "Ofstad", 
-        "Geving", "Fornes", "Hellesø", "Settenøy", "Brøndbo", "Jåma", "Råum", 
-        "Hasfjord", "Finnestrand", "Gravseth", "Inderdal", "Aakervik", "Gjertsås", 
-        "Rosenvinge", "Kirkeby-Garstad", "Brekkvassmo", "Lysø", "Gartland", 
-        "Rian", "Skjærseth", "Foss", "Bomo", "Aagård", "Stokke", "Øksnes"
-    ];
-
-    const FIRSTNAMES = [
-        "Sondre", "Sivert", "Joar", "Gøran", "Håvard", "Vegard", "Odin", "Jonas", 
-        "Kristoffer", "Stian", "Morten", "Magnus", "Andreas", "Thomas", "Markus", 
-        "Eirik", "Even", "Johan", "Arnt", "Roar", "Olav", "Ivar", "Bård", "Ketil", "Sigurd",
-        "Truls", "Bjarne", "Reidar", "Kåre", "Leif", "Eilif", "Knut", "Tore", "Asbjørn",
-        "Kyrre", "Simen", "Aleksander", "Emil", "Oskar", "Martin", "Bendik", "Endre"
-    ];
-
-    const SPECIAL_PLAYERS = [
-        {name: "Kjell Vidar Aune", pos: "Midtbane", rating: 85},
-        {name: "Lars Øvereng", pos: "Forsvar", rating: 82},
-        {name: "Eystein Fiskum Hansvik", pos: "Midtbane", rating: 88},
-        {name: "Runar Moen", pos: "Angrep", rating: 86},
-        {name: "Eivind Stuevold", pos: "Forsvar", rating: 80},
-        {name: "Lars Mørkved", pos: "Keeper", rating: 84},
-        {name: "Svein Tore Hovd", pos: "Angrep", rating: 81},
-        {name: "Bjørn Tore Ness", pos: "Midtbane", rating: 79},
-        {name: "Tor Martin Årseth", pos: "Forsvar", rating: 83},
-        {name: "Pål Morten Skaret", pos: "Midtbane", rating: 87},
-        {name: "Espen Fossland", pos: "Angrep", rating: 88}
-    ];
-
-    const POSITIONS = ["Keeper", "Forsvar", "Midtbane", "Angrep"];
-    
-    const FACILITY_DATA = {
-        kiosk: {
-            name: "Kiosken 🌭", desc: "Øker billett- og kiosksalget for hver kamp.", levels: ["Grillpølse i papir", "Bedre vaffelrøre (+10%)", "Karsk-servering i VIP-telt (+20%)", "Lokalmat-bonanza (+30%)", "Michelin-kiosk (+50%)"], baseCost: 50000
-        },
-        training: {
-            name: "Treningsanlegget 🏋️", desc: "Gjør at spillerne oftere øker i rating etter gode kamper.", levels: ["Traktorspor på grus", "Nyslått gressmatte", "Nye baller og kjegler", "Innleid Fysioterapeut", "Topp moderne Namdal-akademi"], baseCost: 80000
-        },
-        stadium: {
-            name: "Stadion & Tribune 🏟️", desc: "Trekker mer folk til kampene (øker grunninntekten).", levels: ["To campingstoler", "Trebenker langs sidelinja", "Tak over tribunen", "Egen traktor-parkering", "Betongtribune med flomlys"], baseCost: 100000
-        }
-    };
-
-    window.showToast = function(msg, isError = false) {
-        const t = document.getElementById('toast');
-        if(t) {
-            t.innerText = msg;
-            t.className = 'toast-msg ' + (isError ? 'toast-danger' : 'toast-success');
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 3000);
-        }
-    }
-
-    // --- STATE ---
-    let state = {
-        team: "",
-        budget: 1500000, 
-        round: 1,
-        squad: [],
-        market: [],
-        marketFilter: "Alle",
-        nextOpponent: "",
-        matchInterval: null,
-        matchMinute: 0,
-        scoreHome: 0,
-        scoreAway: 0,
-        squadSwapIndex: -1, 
-        tacticsSwapIndex: -1,
-        matchSpeed: 1000,
-        isMatchPaused: false,
-        leagueTable: [],
-        lastResults: [],
-        newsFeed: [],
-        generatedNames: new Set(),
-        facilities: { kiosk: 0, training: 0, stadium: 0 }
-    };
-
-    function generateUniqueName() {
-        let attempts = 0;
-        while(attempts < 100) {
-            const f = FIRSTNAMES[Math.floor(Math.random() * FIRSTNAMES.length)];
-            const l = SURNAMES[Math.floor(Math.random() * SURNAMES.length)];
-            const name = `${f} ${l}`;
-            if (!state.generatedNames.has(name)) {
-                state.generatedNames.add(name);
-                return name;
-            }
-            attempts++;
-        }
-        return `Spiller ${Math.floor(Math.random()*10000)}`; 
-    }
-
-    function generatePlayer(isSpecial = null) {
-        let name = "";
-        let pos = POSITIONS[Math.floor(Math.random() * POSITIONS.length)];
-        
-        let r1 = Math.random(); let r2 = Math.random();
-        let rating = 45 + Math.floor(((r1 + r2) / 2) * 40); // Mellom 45-85
-
-        if (isSpecial) {
-            name = isSpecial.name; pos = isSpecial.pos; rating = isSpecial.rating;
-            state.generatedNames.add(name);
-        } else {
-            name = generateUniqueName();
-        }
-
-        const age = Math.floor(Math.random() * 20) + 16; 
-        
-        let baseValue = Math.max(5000, Math.pow(Math.max(1, rating - 35), 3.0) * 8); 
-        if (age < 21) baseValue *= 1.3; 
-        if (age > 32) baseValue *= 0.7; 
-        baseValue = Math.round(baseValue / 1000) * 1000;
-
-        return {
-            id: Math.random().toString(36).substr(2, 9), name: name, pos: pos, rating: rating,
-            age: age, value: baseValue, fitness: 100, injury: 0, suspension: 0,
-            lastRating: null, ratingChange: 0, valueChange: 0,
-            stats: { goals: 0, cards: 0, injuries: 0, acroGoals: 0 }
-        };
-    }
-
-    function initLeagueTable() {
-        state.leagueTable = TEAMS.map(t => ({ name: t, played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, points: 0 }));
-        sortLeagueTable();
-    }
-
-    function sortLeagueTable() {
-        state.leagueTable.sort((a, b) => {
-            if (b.points !== a.points) return b.points - a.points;
-            const diffA = a.gf - a.ga; const diffB = b.gf - b.ga;
-            if (diffB !== diffA) return diffB - diffA;
-            if (b.gf !== a.gf) return b.gf - a.gf;
-            return a.name.localeCompare(b.name);
-        });
-    }
-
-    function showScreen(screenId) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(screenId).classList.add('active');
-    }
-
-    function updateDashboard() {
-        document.getElementById('dash-team-name').innerText = TEAM_LOGOS[state.team] + " " + state.team;
-        document.getElementById('dash-budget').innerText = state.budget.toLocaleString('nb-NO');
-        document.getElementById('dash-round').innerText = state.round;
-        
-        // Fiks neste motstander for å ikke krasje hvis vi ikke har satt den (lastet spill)
-        if (!state.nextOpponent) {
-            let availableOpponents = TEAMS.filter(t => t !== state.team);
-            state.nextOpponent = availableOpponents[Math.floor(Math.random() * availableOpponents.length)];
-        }
-        
-        document.getElementById('next-match-label').innerText = `${state.team} vs ${state.nextOpponent}`;
-
-        const feedContainer = document.getElementById('news-feed-container');
-        const feedList = document.getElementById('news-feed-list');
-        if (state.newsFeed && state.newsFeed.length > 0) {
-            feedContainer.classList.remove('hidden');
-            feedList.innerHTML = '';
-            state.newsFeed.forEach(news => {
-                const li = document.createElement('li'); li.innerHTML = news; feedList.appendChild(li);
-            });
-        }
-    }
-
-    // --- INTERFACE FOR SKYLAGRING ---
-
-    // Kalles fra module-scriptet hvis den fant et lagret spill
-    window.promptLoadGame = function(savedState) {
-        document.getElementById('start-loading').classList.add('hidden');
-        document.getElementById('start-save-found').classList.remove('hidden');
-        
-        document.getElementById('save-team-name').innerText = `${TEAM_LOGOS[savedState.team] || ''} ${savedState.team} (Runde ${savedState.round})`;
-
-        document.getElementById('btn-load-game').onclick = () => {
-            // Fiks Set'en som ble serialisert til Array i databasen
-            savedState.generatedNames = new Set(savedState.generatedNames || []);
-            state = savedState;
-            
-            updateDashboard();
-            renderLeagueInfo();
-            showScreen('screen-dashboard');
-            window.showToast("Innlastet! Velkommen tilbake sjef.");
-        };
-
-        document.getElementById('btn-ignore-save').onclick = () => {
-            if(window.deleteSaveFromCloud) window.deleteSaveFromCloud();
-            window.triggerStartNewGame();
-        };
-    }
-
-    // Kalles fra module-scriptet hvis ingen lagring finnes (eller error)
-    window.triggerStartNewGame = function() {
-        document.getElementById('start-loading').classList.add('hidden');
-        document.getElementById('start-save-found').classList.add('hidden');
-        document.getElementById('start-new-game').classList.remove('hidden');
-        
-        const teamSelection = document.getElementById('team-selection');
-        teamSelection.innerHTML = '';
-        TEAMS.forEach(team => {
-            const btn = document.createElement('button');
-            btn.className = 'team-card';
-            btn.innerHTML = `<div class="team-card-logo">${TEAM_LOGOS[team] || '⚽'}</div><div class="team-card-name">${team}</div>`;
-            btn.addEventListener('click', () => {
-                state.team = team;
-                for(let i=0; i<16; i++) { state.squad.push(generatePlayer()); }
-                SPECIAL_PLAYERS.forEach(sp => state.market.push(generatePlayer(sp)));
-                while(state.market.length < 40) { state.market.push(generatePlayer()); }
-                
-                initLeagueTable(); 
-                updateDashboard(); 
-                showScreen('screen-dashboard');
-                
-                // Gjør en umiddelbar lagring hvis mulig
-                if(window.saveGameToCloud) window.saveGameToCloud(state);
-            });
-            teamSelection.appendChild(btn);
-        });
-    }
-
-    // --- KLUBBDRIFT ---
-    function renderFacilities() {
-        document.getElementById('facility-budget').innerText = state.budget.toLocaleString('nb-NO');
-        const list = document.getElementById('facilities-list');
-        list.innerHTML = '';
-        
-        Object.keys(FACILITY_DATA).forEach(key => {
-            const data = FACILITY_DATA[key];
-            const currentLevel = state.facilities[key];
-            const cost = data.baseCost * Math.pow(2, currentLevel);
-            const isMaxed = currentLevel >= data.levels.length - 1;
-            
-            const div = document.createElement('div');
-            div.className = 'facility-item flex flex-col md:flex-row justify-between items-center';
-            div.innerHTML = `
-                <div class="mb-2 md:mb-0">
-                    <strong class="text-lg text-primary">${data.name}</strong><br>
-                    <span class="text-sm" style="color:#555">${data.desc}</span><br>
-                    Nivå ${currentLevel}: <strong>${data.levels[currentLevel]}</strong>
-                </div>
-                <div>
-                    ${!isMaxed ? `<button class="btn-secondary" onclick="buyFacility('${key}', ${cost})">Oppgrader (${cost.toLocaleString()} kr)</button>` 
-                              : `<span class="font-bold text-success">Maks nivå!</span>`}
-                </div>
-            `;
-            list.appendChild(div);
-        });
-    }
-    
-    window.buyFacility = function(key, cost) {
-        if (state.budget >= cost) {
-            state.budget -= cost;
-            state.facilities[key]++;
-            renderFacilities();
-        } else {
-            window.showToast("⚠️ Ikke nok penger i kassa!", true);
-        }
-    };
-
-    // --- STALL & OVERGANGER ---
-    function renderSquad() {
-        const startersList = document.getElementById('squad-starters-list');
-        const benchList = document.getElementById('squad-bench-list');
-        startersList.innerHTML = ''; benchList.innerHTML = '';
-        
-        state.squad.forEach((p, index) => {
-            const li = document.createElement('li');
-            li.className = 'player-item cursor-pointer';
-            if (state.squadSwapIndex === index) li.classList.add('selected-player');
-
-            let extraBadge = '';
-            if (p.injury > 0) extraBadge = ` <span class="text-danger">[🚑 ${p.injury} k]</span>`;
-            if (p.suspension > 0) extraBadge = ` <span class="text-danger">[🟥 ${p.suspension} k]</span>`;
-
-            let borsTekst = p.lastRating ? ` | Børs sist: <strong class="text-primary">${p.lastRating.toFixed(1)}</strong>` : '';
-            let ratingText = `<strong>${p.rating}</strong>`;
-            if (p.ratingChange === 1) ratingText += ' <span class="text-success font-bold">↑</span>';
-            else if (p.ratingChange === -1) ratingText += ' <span class="text-danger font-bold">↓</span>';
-            
-            let valueText = `${p.value.toLocaleString('nb-NO')} kr`;
-            if (p.valueChange === 1) valueText += ' <span class="text-success font-bold">↑</span>';
-            else if (p.valueChange === -1) valueText += ' <span class="text-danger font-bold">↓</span>';
-
-            li.innerHTML = `
-                <div class="player-info">
-                    <strong>${p.name}</strong> (${p.pos})${extraBadge}<br>
-                    <span class="player-stats">Rat: ${ratingText} | Kond: ${p.fitness}% | Pris: ${valueText} ${borsTekst}</span>
-                </div>
-                <button class="btn-danger sell-btn" data-id="${p.id}" tabindex="0">Selg</button>
-            `;
-
-            li.addEventListener('click', () => handleSquadSwap(index));
-            const sellBtn = li.querySelector('.sell-btn');
-            if (sellBtn) sellBtn.addEventListener('click', (e) => { e.stopPropagation(); sellPlayer(p.id); });
-
-            if (index < 11) startersList.appendChild(li);
-            else benchList.appendChild(li);
-        });
-    }
-
-    function handleSquadSwap(index) {
-        if (state.squadSwapIndex === -1) { state.squadSwapIndex = index; } 
-        else {
-            if (state.squadSwapIndex !== index) {
-                const temp = state.squad[state.squadSwapIndex];
-                state.squad[state.squadSwapIndex] = state.squad[index];
-                state.squad[index] = temp;
-            }
-            state.squadSwapIndex = -1;
-        }
-        renderSquad();
-    }
-
-    function autoPickBestEleven() {
-        let available = state.squad.filter(p => p.injury === 0 && p.suspension === 0);
-        let unavailable = state.squad.filter(p => p.injury > 0 || p.suspension > 0);
-        available.sort((a, b) => b.rating - a.rating);
-        let starters = available.slice(0, 11);
-        let bench = available.slice(11).concat(unavailable);
-        if (starters.length < 11) {
-            let needed = 11 - starters.length;
-            starters = starters.concat(unavailable.slice(0, needed));
-            bench = unavailable.slice(needed);
-        }
-        state.squad = [...starters, ...bench];
-        state.squadSwapIndex = -1;
-        renderSquad();
-    }
-
-    function sellPlayer(id) {
-        if (state.squad.length <= 11) { window.showToast("⚠️ Du må ha minst 11 spillere!", true); return; }
-        const index = state.squad.findIndex(p => p.id === id);
-        if (index > -1) {
-            state.budget += state.squad[index].value;
-            state.squad.splice(index, 1);
-            renderSquad(); updateDashboard();
-        }
-    }
-
-    function renderMarket() {
-        const list = document.getElementById('market-list'); list.innerHTML = '';
-        document.getElementById('transfer-budget').innerText = state.budget.toLocaleString('nb-NO');
-        const filteredMarket = state.marketFilter === "Alle" ? state.market : state.market.filter(p => p.pos === state.marketFilter);
-        filteredMarket.forEach(p => {
-            const li = document.createElement('li'); li.className = 'player-item';
-            li.innerHTML = `
-                <div class="player-info">
-                    <strong>${p.name}</strong> (${p.pos}) - Alder: ${p.age}<br>
-                    <span class="player-stats">Rating: <strong>${p.rating}</strong> | Pris: ${p.value.toLocaleString('nb-NO')} kr</span>
-                </div>
-                <button class="btn-secondary" onclick="buyPlayer('${p.id}')">Kjøp</button>
-            `;
-            list.appendChild(li);
-        });
-        if(filteredMarket.length === 0) list.innerHTML = '<li class="p-4 text-center">Ingen spillere funnet.</li>';
-    }
-
-    window.buyPlayer = function(id) {
-        const index = state.market.findIndex(p => p.id === id);
-        if (index > -1) {
-            if (state.budget >= state.market[index].value) {
-                state.budget -= state.market[index].value;
-                state.squad.push(state.market[index]);
-                state.market.splice(index, 1);
-                renderMarket(); updateDashboard();
-            } else window.showToast("⚠️ Ikke nok penger i kassa!", true);
-        }
-    }
-
-    // --- KAMP SIMULATOR ---
-    function startMatch() {
-        const starters = state.squad.slice(0, 11);
-        if (starters.length < 11) { window.showToast("⚠️ Du har for få spillere!", true); return; }
-        if (starters.find(p => p.injury > 0 || p.suspension > 0)) { window.showToast("⚠️ Skadde/utviste spillere på banen!", true); return; }
-
-        state.matchSpeed = parseInt(document.querySelector('input[name="speed"]:checked').value);
-        state.scoreHome = 0; state.scoreAway = 0; state.matchMinute = 0; state.isMatchPaused = false;
-        
-        document.getElementById('match-score').innerText = "0 - 0";
-        document.getElementById('match-teams').innerText = `${TEAM_LOGOS[state.team]} ${state.team} vs ${state.nextOpponent} ${TEAM_LOGOS[state.nextOpponent]}`;
-        document.getElementById('match-log').innerHTML = "<p><em>Dommeren blåser i gang kampen!</em></p>";
-        document.getElementById('match-clock').innerText = "00:00";
-        
-        document.getElementById('btn-finish-match').classList.add('hidden');
-        document.getElementById('btn-continue-match').classList.add('hidden');
-        document.getElementById('btn-sub-tactics').classList.remove('hidden');
-
-        showScreen('screen-match');
-        resumeMatch();
-    }
-
-    function resumeMatch() {
-        state.isMatchPaused = false;
-        document.getElementById('btn-sub-tactics').classList.remove('hidden');
-        document.getElementById('btn-continue-match').classList.add('hidden');
-
-        state.matchInterval = setInterval(() => {
-            state.matchMinute++;
-            const mins = state.matchMinute < 10 ? '0'+state.matchMinute : state.matchMinute;
-            document.getElementById('match-clock').innerText = `${mins}:00`;
-
-            const log = document.getElementById('match-log');
-            let tacticsFocus = document.getElementById('focus').value; 
-            
-            let matchEventChance = 0.15; 
-            if (tacticsFocus === 'attack') matchEventChance = 0.20; 
-            if (tacticsFocus === 'defend') matchEventChance = 0.10; 
-            
-            if (Math.random() < matchEventChance) {
-                let eventType = Math.random();
-                let txt = "";
-                let starter = state.squad.slice(0,11)[Math.floor(Math.random() * 11)];
-                let opp = state.nextOpponent;
-                
-                let homeGoalThreshold = 0.20;
-                let awayGoalThreshold = 0.40;
-                
-                if (tacticsFocus === 'attack') { homeGoalThreshold = 0.25; awayGoalThreshold = 0.45; } 
-                else if (tacticsFocus === 'defend') { homeGoalThreshold = 0.10; awayGoalThreshold = 0.20; }
-
-                if (eventType < homeGoalThreshold) { 
-                    const goalMsgs = ["klinker ballen i krysset!", "kriger ballen over streken.", "fyrer av en suser fra 30 meter!", "runder keeper med en tofotsfinte.", "scorer på et nydelig brassespark!", "får ballen i mål via et elendig treff med leggskinnet.", "stusser inn en corner på første stolpe."];
-                    let msg = goalMsgs[Math.floor(Math.random()*goalMsgs.length)];
-                    state.scoreHome++;
-                    starter.stats.goals++;
-                    if (msg.includes("brassespark")) starter.stats.acroGoals++;
-                    
-                    txt = `⚽ <strong>MÅL!</strong> ${starter.name} ${msg} (for ${state.team})!`;
-                } else if (eventType < awayGoalThreshold) { 
-                    const awayGoalMsgs = ["utnytter rot i forsvaret.", "nikker inn en corner.", "kontrer inn et mål.", "skyter via ryggen til dommeren.", "pirker inn en retur.", "kliner ballen opp i nettaket.", "ruller ballen kaldt forbi keeper."];
-                    state.scoreAway++;
-                    txt = `⚽ <strong>MÅL!</strong> ${opp} ${awayGoalMsgs[Math.floor(Math.random()*awayGoalMsgs.length)]}`;
-                } else if (eventType < (awayGoalThreshold + 0.05)) { 
-                    starter.injury = 2;
-                    starter.stats.injuries++;
-                    txt = `🚑 <strong>Skade!</strong> ${starter.name} tråkker over i et dypt traktorspor og må ut. (Ute i 2 kamper)`;
-                } else if (eventType < (awayGoalThreshold + 0.10)) { 
-                    starter.suspension = 1;
-                    starter.stats.cards += 3; 
-                    txt = `🟥 <strong>Rødt kort!</strong> ${starter.name} sparker ned hjørneflagget i frustrasjon. Marsjordre! (1 kamp karantene)`;
-                } else if (eventType < (awayGoalThreshold + 0.25)) {
-                    let cardTxt = tacticsFocus === 'defend' ? "kynisk nedriving for å stoppe en kontring." : "voldsomt kjeftbruk mot linjedommeren.";
-                    let isHome = Math.random() > 0.5;
-                    if(isHome) starter.stats.cards += 1;
-                    txt = `🟨 Gult kort til ${isHome ? starter.name : opp} for ${cardTxt}`;
-                } else {
-                    const misses = ["Ballen havner oppe på taket av pølsebua.", "Kjempesjanse, men han snubler i egne bein.", "En hund løper inn på banen og stopper angrepet!", "Sjokk-bom for åpent mål! Hvordan er det mulig?", "Keeper varter opp med en tv-redning!"];
-                    txt = `😲 ${misses[Math.floor(Math.random()*misses.length)]}`;
-                }
-
-                log.innerHTML = `<p>[${state.matchMinute}'] ${txt}</p>` + log.innerHTML;
-                document.getElementById('match-score').innerText = `${state.scoreHome} - ${state.scoreAway}`;
-            }
-
-            if (state.matchMinute >= 90) {
-                clearInterval(state.matchInterval);
-                log.innerHTML = `<p><strong>[90'] Kampen er slutt!</strong></p>` + log.innerHTML;
-                document.getElementById('btn-sub-tactics').classList.add('hidden');
-                document.getElementById('btn-finish-match').classList.remove('hidden');
-            }
-        }, state.matchSpeed);
-    }
-
-    function pauseMatchForTactics() {
-        clearInterval(state.matchInterval);
-        state.isMatchPaused = true;
-        state.tacticsSwapIndex = -1;
-        document.getElementById('match-formation').value = document.getElementById('formation').value;
-        document.getElementById('match-focus').value = document.getElementById('focus').value;
-        renderTacticsMatch();
-        showScreen('screen-match-tactics');
-    }
-
-    function renderTacticsMatch() {
-        const pitch = document.getElementById('match-pitch-list'); const bench = document.getElementById('match-bench-list');
-        pitch.innerHTML = ''; bench.innerHTML = '';
-        state.squad.forEach((p, index) => {
-            const li = document.createElement('li'); li.className = 'player-item cursor-pointer';
-            if (state.tacticsSwapIndex === index) li.classList.add('selected-player');
-            let status = ''; let disabled = false;
-            if (p.injury > 0) { status = "🚑 Skadet"; disabled = true; }
-            if (p.suspension > 0) { status = "🟥 Utvist"; disabled = true; }
-            li.innerHTML = `<div class="player-info ${disabled ? 'opacity-50' : ''}"><strong>${p.name}</strong> (${p.pos}) <span class="text-sm font-bold text-danger">${status}</span></div>`;
-            if (!disabled || (disabled && index < 11)) li.addEventListener('click', () => handleMatchSwap(index, disabled));
-            if (index < 11) pitch.appendChild(li); else bench.appendChild(li);
-        });
-    }
-
-    function handleMatchSwap(index, disabled) {
-        if (disabled && index >= 11) return;
-        if (state.tacticsSwapIndex === -1) state.tacticsSwapIndex = index;
-        else {
-            if (state.tacticsSwapIndex !== index) {
-                const p1 = state.squad[state.tacticsSwapIndex]; const p2 = state.squad[index];
-                if ((state.tacticsSwapIndex >= 11 && (p1.injury > 0 || p1.suspension > 0)) || (index >= 11 && (p2.injury > 0 || p2.suspension > 0))) {
-                    window.showToast("⚠️ Kan ikke bytte inn skadde eller utviste!", true);
-                } else {
-                    const temp = state.squad[state.tacticsSwapIndex];
-                    state.squad[state.tacticsSwapIndex] = state.squad[index];
-                    state.squad[index] = temp;
-                }
-            }
-            state.tacticsSwapIndex = -1;
-        }
-        renderTacticsMatch();
-    }
-
-    function finishMatch() {
-        let matchNews = [];
-        let baseIncome = 15000 + (state.facilities.stadium * 5000); 
-        let ticketIncome = (baseIncome + Math.floor(Math.random() * 20000)) * (1 + state.facilities.kiosk * 0.10);
-        let prizeMoney = state.scoreHome > state.scoreAway ? 40000 : (state.scoreHome === state.scoreAway ? 10000 : 0);
-        state.budget += (ticketIncome + prizeMoney);
-        
-        matchNews.push(`💰 Økonomi: Solgte billetter og mat for ${ticketIncome.toLocaleString('nb-NO')} kr. (Kiosk-nivå ${state.facilities.kiosk})`);
-        if (state.scoreHome > state.scoreAway) matchNews.push(`🏆 Seiersbonus: ${prizeMoney.toLocaleString('nb-NO')} kr.`);
-        else if (state.scoreHome === state.scoreAway) matchNews.push(`🤝 Poengdeling gir bonus: ${prizeMoney.toLocaleString('nb-NO')} kr.`);
-
-        state.squad.forEach((p, i) => {
-            p.valueChange = 0; p.ratingChange = 0;
-            if (i < 11) {
-                p.fitness = Math.max(30, p.fitness - (Math.floor(Math.random() * 15) + 5));
-                let basePerformance = (p.rating / 10) + (Math.random() * 4 - 2);
-                if (state.scoreHome > state.scoreAway) basePerformance += 1;
-                else if (state.scoreHome < state.scoreAway) basePerformance -= 1;
-                
-                p.lastRating = Math.max(1.0, Math.min(10.0, basePerformance));
-
-                if (p.lastRating >= 7.5) {
-                    let increase = Math.floor(p.value * 0.05); p.value += increase; p.valueChange = 1;
-                    let devChance = 0.5 + (state.facilities.training * 0.1); 
-                    if (Math.random() < devChance && p.rating < 99) { p.rating += 1; p.ratingChange = 1; } 
-                } else if (p.lastRating <= 4.0) {
-                    let decrease = Math.floor(p.value * 0.05); p.value = Math.max(5000, p.value - decrease); p.valueChange = -1;
-                }
-            } else { p.fitness = Math.min(100, p.fitness + 15); p.lastRating = null; }
-            if (p.injury > 0) p.injury--; if (p.suspension > 0) p.suspension--;
-        });
-
-        const humorOverskrifter = [
-            "Skandale i Namdalen: Vaffeljernet kortsluttet anlegget!",
-            "Dommeren måtte rømme i traktor etter kontroversiell scoring.",
-            "Lokal helt observert med karsk på innbytterbenken.",
-            "Sau på banen forsinket 2. omgang med et kvarter.",
-            "Klubbleder krever at linjemannen tar synstest.",
-            "Traktorspor på midtbanen skapte kaos.",
-            "Trener ble utvist etter å ha kastet en kaffetermos i sinne.",
-            "Nytt traktor-lass med pukk tippet på feil bane."
+    <script>
+        /* ==========================================
+           DATAGRUNNLAG: 16 KLUBBER I DISTRIKTET
+           ========================================== */
+        const CLUBS = [
+            { id: "bergsmo", name: "Borussia Bergsmo", logo: "🐝", rep: 68, stadium: "Karsk-Parken", colors: { main: "#eab308", text: "#000000" }, desc: "Den gule veggen i distriktet. Ekstrem kontringsfotball og herlig kaos." },
+            { id: "bangsund", name: "Bangsund Bangers", logo: "💥", rep: 69, stadium: "Bangsund Grus & Gress", colors: { main: "#38bdf8", text: "#000000" }, desc: "Tøffe dueller og susende taklinger rett foran bensinstasjonen." },
+            { id: "rorvik", name: "Real Rørvik", logo: "🐟", rep: 67, stadium: "Kystarena Rørvik", colors: { main: "#2563eb", text: "#ffffff" }, desc: "Sjy, sild og ambisiøs kystfotball. Erkerival med Namsos." },
+            { id: "namsos", name: "Namsos Rockers", logo: "🎸", rep: 67, stadium: "Rock City Stadion", colors: { main: "#dc2626", text: "#ffffff" }, desc: "Distriktets rockere. Spiller med full vreng og tøffe riff." },
+            { id: "medja", name: "Medjå Spellemannslag", logo: "🎻", rep: 66, stadium: "Felekanten Stadion", colors: { main: "#16a34a", text: "#ffffff" }, desc: "Felelåt i garderoben og kirurgisk presisjon i frisparkfoten." },
+            { id: "kolvereid", name: "Kolvereid Pils & Pasning", logo: "🍺", rep: 65, stadium: "Sentrumsbanen", colors: { main: "#f97316", text: "#ffffff" }, desc: "Rause med serveringen og millimeterpresise i bakrommet." },
+            { id: "flatanger", name: "Flatanger Eagles", logo: "🦅", rep: 68, stadium: "Klippeveggen Stadion", colors: { main: "#0284c7", text: "#ffffff" }, desc: "Flyr høyt på dødballer med havørnblikk i feltet." },
+            { id: "harran", name: "Karran fra Harran", logo: "🧔", rep: 65, stadium: "E6 Myra", colors: { main: "#65a30d", text: "#ffffff" }, desc: "Skjegg, traktor og knallharde sklitaklinger i høyt gress." },
+            { id: "abelvaer", name: "Abelvær Atletklubb", logo: "🏰", rep: 64, stadium: "Fjordgløtt Arena", colors: { main: "#8b5cf6", text: "#ffffff" }, desc: "Gammel adel og seig kystvilje i motvind." },
+            { id: "spillum", name: "Spillum Sagflis & Ball", logo: "🪵", rep: 65, stadium: "Sagbruket Park", colors: { main: "#ca8a04", text: "#ffffff" }, desc: "Dufter fersk gran og furu. Høvler over kantene." },
+            { id: "namdalseid", name: "Dynamo Namdalseid", logo: "⚡", rep: 66, stadium: "Sentrumsgresset", colors: { main: "#ef4444", text: "#ffffff" }, desc: "Lynraske overganger og uante krefter fra skogen." },
+            { id: "otteroya", name: "Galácticos Otterøya", logo: "🌌", rep: 67, stadium: "Galaksebanen", colors: { main: "#a855f7", text: "#ffffff" }, desc: "Sambafakter, overstegsfinter og stjernenykker på øya." },
+            { id: "leka", name: "Lokomotiv Leka", logo: "🚂", rep: 64, stadium: "Sagaøya Gress", colors: { main: "#64748b", text: "#ffffff" }, desc: "Et damptog ute i havgapet som maler motstanderen i stykker." },
+            { id: "royrvik", name: "Røyrvik Miners", logo: "⛏️", rep: 65, stadium: "Gruvestadion", colors: { main: "#475569", text: "#ffffff" }, desc: "Hardtarbeidende fjellfolk som nekter å tape hodedueller." },
+            { id: "overhalla", name: "Overhalla Betongball", logo: "🧱", rep: 65, stadium: "Ranum", colors: { main: "#57534e", text: "#ffffff" }, desc: "Hardtslående forsvar og ugjennomtrengelig mur på Ranum." },
+            { id: "bindal", name: "Bindal Backstabbers", logo: "🗡️", rep: 65, stadium: "Grensebanen", colors: { main: "#991b1b", text: "#ffffff" }, desc: "Lurer i skyggene på fylkesgrensa med lynhurtige kontringer." }
         ];
-        matchNews.push(`🤣 ${humorOverskrifter[Math.floor(Math.random()*humorOverskrifter.length)]}`);
-        state.newsFeed = matchNews;
 
-        let starters = state.squad.slice(0,11); let bench = state.squad.slice(11);
-        for (let i=0; i<starters.length; i++) {
-            if (starters[i].injury > 0 || starters[i].suspension > 0) {
-                let healthyIndex = bench.findIndex(bp => bp.injury === 0 && bp.suspension === 0);
-                if(healthyIndex > -1) { let temp = starters[i]; starters[i] = bench[healthyIndex]; bench[healthyIndex] = temp; }
+        /* Global Tilstand */
+        let state = {
+            userClub: null,
+            cash: 1500000,
+            round: 1,
+            maxRounds: 14,
+            formation: "4-4-2",
+            tacticFocus: "Klassisk kontring",
+            trainingFocus: "standard",
+            scoutLevel: 0,
+            foreignScoutActive: false,
+            foreignScoutRoundsLeft: 0,
+            discoveredForeigner: null,
+            selectedPitchIndex: null,
+            trainingDoneThisRound: false,
+            table: [],
+            squad: [],
+            transferMarket: [],
+            news: [],
+            matchSim: null
+        };
+
+        const SCOUT_LEVELS = [
+            { lvl: 0, name: "Arnt med kikkerten", desc: "Lånt feltkikkert og hjemmebrent. Bommer rett som det er.", cost: 0 },
+            { lvl: 1, name: "Kjell-Arne i skogkanten", desc: "VHS-kamera fra 1998. Fanger opp laguttak oftere.", cost: 40000 },
+            { lvl: 2, name: "Regional sjefsspeider", desc: "Sesongkort & moped. Låser opp Utenlandstokt!", cost: 90000 },
+            { lvl: 3, name: "Internasjonalt nettverk", desc: "Faxmaskin mot Sverige og kontinentet. Høy treffsikkerhet.", cost: 160000 }
+        ];
+
+        /* Initiering */
+        window.addEventListener('DOMContentLoaded', () => {
+            renderClubGrid();
+        });
+
+        function renderClubGrid() {
+            const container = document.getElementById("clubGridContainer");
+            container.innerHTML = "";
+
+            if (!state.userClub) {
+                state.userClub = CLUBS[0];
+            }
+
+            CLUBS.forEach(c => {
+                const card = document.createElement("button");
+                card.type = "button";
+                card.className = `club-card-select ${state.userClub.id === c.id ? 'selected' : ''}`;
+                card.onclick = () => selectClub(c.id);
+
+                card.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <span style="font-size: 1.5rem;">${c.logo}</span>
+                        <strong style="font-size: 0.9rem; color: #fff; font-family: 'Chakra Petch', sans-serif;">${c.name}</strong>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--fm-muted); line-height: 1.3;" class="mono">
+                        🏟️ ${c.stadium}<br>
+                        ⚡ Omdømme: <span class="text-green">${c.rep}</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+
+            updateSelectedClubDetail();
+        }
+
+        function selectClub(clubId) {
+            state.userClub = CLUBS.find(x => x.id === clubId) || CLUBS[0];
+            document.querySelectorAll(".club-card-select").forEach((el, idx) => {
+                if (CLUBS[idx].id === clubId) el.classList.add("selected");
+                else el.classList.remove("selected");
+            });
+            updateSelectedClubDetail();
+        }
+
+        function updateSelectedClubDetail() {
+            const c = state.userClub || CLUBS[0];
+            document.getElementById("detailLogo").textContent = c.logo;
+            document.getElementById("detailName").textContent = c.name;
+            document.getElementById("detailDesc").textContent = c.desc;
+            document.getElementById("detailStadium").textContent = c.stadium;
+            document.getElementById("detailRep").textContent = c.rep + " / 100";
+        }
+
+        function startGame() {
+            if (!state.userClub) state.userClub = CLUBS[0];
+
+            state.table = CLUBS.map(c => ({
+                id: c.id, name: c.name, logo: c.logo, p: 0, w: 0, d: 0, l: 0, gf: 0, ga: 0, pts: 0
+            }));
+
+            generateInitialSquad();
+            generateTransferMarket();
+
+            state.news = [
+                { tag: "SESONGSTART", text: `Velkommen til ny sesong! ${state.userClub.name} satser alt på heder og ære under ny ledelse.` },
+                { tag: "SKANDALE", text: "Samfunnshuset melder om karsklekkasje på bakrommet før helgens lokaloppgjør. Formannen lover bedring!" }
+            ];
+
+            document.getElementById("screenIntro").classList.add("hidden");
+            document.getElementById("topStatsGroup").classList.remove("hidden");
+            document.getElementById("gameHub").classList.remove("hidden");
+
+            updateHeader();
+            updateDashboard();
+            renderTacticsBoard();
+            renderFacilities();
+            renderTable();
+            renderNews();
+        }
+
+        /* Oppdatering av Header & Penger */
+        function updateHeader() {
+            document.getElementById("headerClubLogo").textContent = state.userClub.logo;
+            document.getElementById("headerClubName").textContent = state.userClub.name;
+            document.getElementById("headerCash").textContent = state.cash.toLocaleString() + " kr";
+            document.getElementById("headerRound").textContent = `${state.round} / ${state.maxRounds}`;
+
+            const transCash = document.getElementById("transfersCashDisplay");
+            if (transCash) transCash.textContent = state.cash.toLocaleString() + " kr";
+
+            const facCash = document.getElementById("facilitiesCashDisplay");
+            if (facCash) facCash.textContent = state.cash.toLocaleString() + " kr";
+        }
+
+        /* Fanestyring */
+        function switchTab(tabId) {
+            const tabs = ["dashboard", "tactics", "training", "transfers", "facilities", "table"];
+            tabs.forEach(t => {
+                const el = document.getElementById("tab" + t.charAt(0).toUpperCase() + t.slice(1));
+                if (el) el.classList.add("hidden");
+            });
+
+            document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+            const target = document.getElementById("tab" + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+            if (target) target.classList.remove("hidden");
+
+            const btns = Array.from(document.querySelectorAll(".nav-btn"));
+            const matchBtn = btns.find(b => b.textContent.toLowerCase().includes(tabId.substring(0, 4)));
+            if (matchBtn) matchBtn.classList.add("active");
+
+            if (tabId === "tactics") renderTacticsBoard();
+            if (tabId === "training") renderTrainingTab();
+            if (tabId === "transfers") renderTransferTab();
+            if (tabId === "facilities") renderFacilities();
+            if (tabId === "table") renderTable();
+            if (tabId === "dashboard") updateDashboard();
+        }
+
+        /* ==========================================
+           STALL-GENERERING & AUTOPLUKK
+           ========================================== */
+        function generateInitialSquad() {
+            const firstNames = ["Ola", "Kjell", "Bjarne", "Trond", "Arve", "Morten", "Per", "Jo", "Roar", "Einar", "Gunnar", "Lars", "Stian", "Tor"];
+            const lastNames = ["Fiskum", "Klinga", "Harran", "Moen", "Solli", "Aas", "Overrein", "Gartland", "Sellæg", "Lindseth", "Berg", "Opdal"];
+
+            state.squad = [];
+            // 2 Keepere
+            for (let i = 0; i < 2; i++) {
+                state.squad.push({
+                    id: "p_" + Math.random().toString(36).substr(2, 7),
+                    name: firstNames[Math.floor(Math.random()*firstNames.length)] + " " + lastNames[Math.floor(Math.random()*lastNames.length)],
+                    pos: "Keeper", rating: Math.floor(Math.random() * 8) + 64, fitness: 100, injured: 0, suspended: 0,
+                    inEleven: i === 0, isNew: false
+                });
+            }
+            // 5 Forsvar
+            for (let i = 0; i < 5; i++) {
+                state.squad.push({
+                    id: "p_" + Math.random().toString(36).substr(2, 7),
+                    name: firstNames[Math.floor(Math.random()*firstNames.length)] + " " + lastNames[Math.floor(Math.random()*lastNames.length)],
+                    pos: "Forsvar", rating: Math.floor(Math.random() * 9) + 63, fitness: 100, injured: 0, suspended: 0,
+                    inEleven: i < 4, isNew: false
+                });
+            }
+            // 5 Midtbane
+            for (let i = 0; i < 5; i++) {
+                state.squad.push({
+                    id: "p_" + Math.random().toString(36).substr(2, 7),
+                    name: firstNames[Math.floor(Math.random()*firstNames.length)] + " " + lastNames[Math.floor(Math.random()*lastNames.length)],
+                    pos: "Midtbane", rating: Math.floor(Math.random() * 9) + 63, fitness: 100, injured: 0, suspended: 0,
+                    inEleven: i < 4, isNew: false
+                });
+            }
+            // 4 Angrep
+            for (let i = 0; i < 4; i++) {
+                state.squad.push({
+                    id: "p_" + Math.random().toString(36).substr(2, 7),
+                    name: firstNames[Math.floor(Math.random()*firstNames.length)] + " " + lastNames[Math.floor(Math.random()*lastNames.length)],
+                    pos: "Angrep", rating: Math.floor(Math.random() * 10) + 64, fitness: 100, injured: 0, suspended: 0,
+                    inEleven: i < 2, isNew: false
+                });
             }
         }
-        state.squad = [...starters, ...bench];
 
-        updateTable(state.team, state.scoreHome, state.scoreAway); updateTable(state.nextOpponent, state.scoreAway, state.scoreHome);
-        state.lastResults = [{ home: state.team, away: state.nextOpponent, hScore: state.scoreHome, aScore: state.scoreAway }];
+        function autoPickBestEleven() {
+            state.squad.forEach(p => p.inEleven = false);
 
-        let otherTeams = TEAMS.filter(t => t !== state.team && t !== state.nextOpponent).sort(() => 0.5 - Math.random());
-        for(let i=0; i<otherTeams.length; i+=2) {
-            let h = otherTeams[i]; let a = otherTeams[i+1]; let hS = Math.floor(Math.random()*4); let aS = Math.floor(Math.random()*4);
-            updateTable(h, hS, aS); updateTable(a, aS, hS);
-            state.lastResults.push({ home: h, away: a, hScore: hS, aScore: aS });
+            const availableGKs = state.squad.filter(p => p.pos === "Keeper" && p.injured === 0 && p.suspended === 0);
+            if (availableGKs.length > 0) availableGKs.sort((a, b) => b.rating - a.rating)[0].inEleven = true;
+            else { const fallbackGK = state.squad.filter(p => p.pos === "Keeper")[0]; if (fallbackGK) fallbackGK.inEleven = true; }
+
+            const outfield = state.squad.filter(p => p.pos !== "Keeper" && p.injured === 0 && p.suspended === 0);
+            outfield.sort((a, b) => (b.rating * (b.fitness/100)) - (a.rating * (a.fitness/100)));
+
+            let picked = 0;
+            for (let p of outfield) {
+                if (picked < 10) { p.inEleven = true; picked++; }
+            }
+            if (state.squad.filter(p => p.inEleven).length < 11) {
+                const rest = state.squad.filter(p => !p.inEleven && p.pos !== "Keeper");
+                for (let p of rest) {
+                    if (state.squad.filter(x => x.inEleven).length < 11) p.inEleven = true;
+                }
+            }
+            renderTacticsBoard();
         }
 
-        sortLeagueTable(); 
-        
-        // Autolagre etter hver kamp hvis tilgjengelig
-        if (window.saveGameToCloud) window.saveGameToCloud(state);
-        
-        // Sesongslutt?
-        if (state.round >= 30) {
-            showTullballenAwards();
-        } else {
+        /* ==========================================
+           TAKTIKKTAVLE & BANEKART
+           ========================================== */
+        function updateFormation() { state.formation = document.getElementById("tacticFormation").value; renderTacticsBoard(); }
+        function updateTacticFocus() { state.tacticFocus = document.getElementById("tacticFocus").value; renderTacticsBoard(); }
+
+        function renderTacticsBoard() {
+            const prosConsEl = document.getElementById("tacticProsCons");
+            const fDesc = {
+                "4-4-2": "Klassisk balanse. Trygt og traust, men kan bli løpt over på midtbanen.",
+                "4-3-3": "Bredde og hurtige kanter. Farlig fremover, men etterlater rom bak backene.",
+                "3-5-2": "Dominans på midten og mange innlegg. Svært sårbare mot raske vinger.",
+                "4-5-1": "Betongmur. Ekstremt vanskelig å score på, men spissen blir ofte mutters alene.",
+                "5-4-1": "Parkert traktor. Kveler kampen fullstendig og satser alt på 0-0."
+            };
+            prosConsEl.innerHTML = `<strong>Taktisk vurdering:</strong> ${fDesc[state.formation] || ""} <br><span class="text-cyan">Stil: ${state.tacticFocus}</span>`;
+
+            const eleven = state.squad.filter(p => p.inEleven);
+            const gk = eleven.filter(p => p.pos === "Keeper")[0] || eleven[0];
+            let nonGk = eleven.filter(p => p !== gk);
+            
+            let counts = [4, 4, 2];
+            if (state.formation === "4-3-3") counts = [4, 3, 3];
+            if (state.formation === "3-5-2") counts = [3, 5, 2];
+            if (state.formation === "4-5-1") counts = [4, 5, 1];
+            if (state.formation === "5-4-1") counts = [5, 4, 1];
+
+            renderPitchRow("pitchRowGK", gk ? [gk] : []);
+            renderPitchRow("pitchRowDEF", nonGk.slice(0, counts[0]));
+            renderPitchRow("pitchRowMID", nonGk.slice(counts[0], counts[0] + counts[1]));
+            renderPitchRow("pitchRowFWD", nonGk.slice(counts[0] + counts[1], counts[0] + counts[1] + counts[2]));
+
+            renderSquadTable();
+        }
+
+        function renderPitchRow(elementId, players) {
+            const row = document.getElementById(elementId);
+            row.innerHTML = "";
+            players.forEach(p => {
+                const disc = document.createElement("div");
+                disc.className = "player-disc";
+                disc.onclick = () => selectPitchPlayer(p);
+
+                const isGK = p.pos === "Keeper";
+                const isInjured = p.injured > 0;
+                const isSusp = p.suspended > 0;
+                const isSelected = state.selectedPitchIndex && state.selectedPitchIndex.id === p.id;
+
+                let shirtClass = "disc-shirt";
+                if (isGK) shirtClass += " keeper";
+                if (isInjured || isSusp) shirtClass += " injured";
+
+                const mainCol = state.userClub ? state.userClub.colors.main : "#38bdf8";
+                const textCol = state.userClub ? state.userClub.colors.text : "#000000";
+                
+                let glow = isSelected ? 'box-shadow: 0 0 15px 5px var(--fm-gold); transform: scale(1.15);' : '';
+
+                disc.innerHTML = `
+                    <div class="${shirtClass}" style="${!isGK && !isInjured ? `background:${mainCol}; color:${textCol};` : ''} ${glow}">
+                        ${isInjured ? '🚑' : (isSusp ? '🟥' : p.rating)}
+                    </div>
+                    <div class="disc-name" style="${isInjured || isSusp ? 'border-color:var(--fm-red); color:var(--fm-red); font-weight:bold;' : ''}">
+                        ${isInjured ? '🚑 ' : (isSusp ? '🟥 ' : '')}${p.name.split(" ")[1] || p.name}
+                    </div>
+                `;
+                row.appendChild(disc);
+            });
+        }
+
+        function selectPitchPlayer(player) {
+            state.selectedPitchIndex = player;
+            renderTacticsBoard(); // For å vise glowing ramme
+        }
+
+        function swapPlayerWithBench(benchPlayer) {
+            if (!state.selectedPitchIndex) {
+                benchPlayer.inEleven = !benchPlayer.inEleven;
+            } else {
+                state.selectedPitchIndex.inEleven = false;
+                benchPlayer.inEleven = true;
+                state.selectedPitchIndex = null;
+            }
+            renderTacticsBoard();
+        }
+
+        function renderSquadTable() {
+            const body = document.getElementById("squadTableBody");
+            body.innerHTML = "";
+            document.getElementById("squadCount").textContent = state.squad.length;
+
+            state.squad.forEach(p => {
+                const tr = document.createElement("tr");
+                let statusBadge = `<span class="text-green">Klar</span>`;
+                if (p.injured > 0) statusBadge = `<span class="text-red">🚑 ${p.injured}k skadet</span>`;
+                if (p.suspended > 0) statusBadge = `<span class="text-gold">🟥 ${p.suspended}k utvist</span>`;
+                if (p.isNew) statusBadge += ` <span class="news-tag">NY!</span>`;
+
+                tr.innerHTML = `
+                    <td><strong>${p.pos.substring(0,3)}</strong></td>
+                    <td>${p.name} ${p.inEleven ? '<strong class="text-gold">★</strong>' : ''}</td>
+                    <td class="mono">${p.rating}</td>
+                    <td>
+                        <div class="battery-bar">
+                            <div class="battery-level" style="width:${p.fitness}%; background:${p.fitness > 70 ? 'var(--fm-green)' : (p.fitness > 40 ? 'var(--fm-gold)' : 'var(--fm-red)')}"></div>
+                        </div>
+                        <span class="mono" style="font-size:0.75rem;">${p.fitness}%</span>
+                    </td>
+                    <td>${statusBadge}</td>
+                    <td>
+                        <button style="background:#1e293b; color:#fff; border:1px solid #475569; padding:4px 8px; border-radius:3px; font-size:0.75rem; cursor:pointer;" onclick='swapPlayerWithBench(${JSON.stringify(p).replace(/'/g, "\\'")})'>
+                            ${p.inEleven ? 'Til benk' : 'Til ellever'}
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        /* ==========================================
+           TRENINGSFELTET
+           ========================================== */
+        function renderTrainingTab() {
+            const body = document.getElementById("trainingSquadBody");
+            body.innerHTML = "";
+            state.squad.forEach(p => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `
+                    <td><strong>${p.name}</strong> (${p.pos})</td>
+                    <td>
+                        <div class="battery-bar">
+                            <div class="battery-level" style="width:${p.fitness}%; background:${p.fitness > 70 ? 'var(--fm-green)' : (p.fitness > 40 ? 'var(--fm-gold)' : 'var(--fm-red)')}"></div>
+                        </div> <span class="mono text-cyan">${p.fitness}%</span>
+                    </td>
+                    <td class="mono text-gold">${p.rating}</td>
+                    <td>${p.injured > 0 ? `🚑 ${p.injured}k skade` : (p.suspended > 0 ? `🟥 ${p.suspended}k` : 'Frisk og rask')}</td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function applyTraining(type) {
+            state.trainingFocus = type;
+            state.trainingDoneThisRound = true;
+            const fb = document.getElementById("trainingFeedback");
+
+            if (type === "recovery") {
+                state.squad.forEach(p => {
+                    p.fitness = Math.min(100, p.fitness + 25);
+                    if (p.injured > 0) p.injured = Math.max(0, p.injured - 1);
+                });
+                fb.innerHTML = `♨️ <strong>Restitusjon:</strong> Karsk og badstue gjør underverker! Hele troppen har fått +25% kondisjon, og skadestua tømmes raskere.`;
+            } else if (type === "finishing") {
+                state.squad.forEach(p => { p.fitness = Math.max(20, p.fitness - 12); if (p.pos === "Angrep" && Math.random() < 0.25) p.rating++; });
+                fb.innerHTML = `🎯 <strong>Avslutningstrening:</strong> Spissene dæljet baller i vinkelen til krampa tok dem. Øker sjansene i angrep!`;
+            } else if (type === "defending") {
+                state.squad.forEach(p => { p.fitness = Math.max(20, p.fitness - 10); if (p.pos === "Forsvar" && Math.random() < 0.25) p.rating++; });
+                fb.innerHTML = `🧱 <strong>Forsvarsmur satt opp:</strong> Stopperne har taklet så gresstustene fløy. Solid forsvarsboost sikret!`;
+            } else if (type === "setpiece") {
+                state.squad.forEach(p => p.fitness = Math.max(20, p.fitness - 6));
+                fb.innerHTML = `📐 <strong>Dødballer finslipt:</strong> Lange innkast opp i traktorsporet og harde cornere på første stolpe er terpet på!`;
+            } else {
+                state.squad.forEach(p => p.fitness = Math.max(20, p.fitness - 8));
+                fb.innerHTML = `⚽ <strong>Standard namdalsøkt:</strong> To runder rundt myra, litt firkant og kaffe i pausen. Jevn og god form.`;
+            }
+
+            renderTrainingTab();
+            renderTacticsBoard();
+            updateDashboard(); // For å fjerne evt Kåre-varsel
+        }
+
+        /* ==========================================
+           OVERGANGSMARKED
+           ========================================== */
+        function generateTransferMarket() {
+            const names = ["Ronny 'Kanon' Viken", "Gøran Grus", "Stig Traktor", "Svein Knoke", "Bård Lynet", "Arne Slegga", "Preben Kontring"];
+            const pos = ["Keeper", "Forsvar", "Midtbane", "Angrep"];
+
+            state.transferMarket = [];
+            for (let i = 0; i < 5; i++) {
+                state.transferMarket.push({
+                    id: "tr_" + i,
+                    name: names[i % names.length],
+                    pos: pos[Math.floor(Math.random() * pos.length)],
+                    rating: Math.floor(Math.random() * 8) + 67,
+                    price: Math.floor(Math.random() * 40000) + 40000
+                });
+            }
+        }
+
+        function renderTransferTab() {
+            const body = document.getElementById("transferTableBody");
+            body.innerHTML = "";
+            const warning = document.getElementById("scoutAbsenceWarning");
+            
+            if (state.foreignScoutActive) warning.classList.remove("hidden");
+            else warning.classList.add("hidden");
+
+            state.transferMarket.forEach((p, idx) => {
+                const tr = document.createElement("tr");
+                const canAfford = state.cash >= p.price;
+
+                let ratingDisplay = `<span class="mono">${p.rating}</span>`;
+                if (state.foreignScoutActive) {
+                    ratingDisplay = `<span class="mono" style="border:1px dashed var(--fm-gold); padding:2px 4px;">ca. ${p.rating - 3}-${p.rating + 3}?</span>`;
+                }
+
+                tr.innerHTML = `
+                    <td><strong>${p.name}</strong></td>
+                    <td>${p.pos}</td>
+                    <td>${ratingDisplay}</td>
+                    <td class="mono ${canAfford ? 'text-green' : 'text-red'}">${p.price.toLocaleString()} kr</td>
+                    <td>
+                        <button style="background:${canAfford ? 'var(--fm-green)' : '#475569'}; color:${canAfford ? '#000' : '#ccc'}; border:none; padding:6px 12px; border-radius:3px; font-weight:bold; cursor:${canAfford ? 'pointer' : 'not-allowed'};" ${canAfford ? `onclick="buyPlayer(${idx})"` : 'disabled'}>
+                            ${canAfford ? 'Kjøp spiller' : 'For dyr ⛔'}
+                        </button>
+                    </td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function buyPlayer(idx) {
+            const p = state.transferMarket[idx];
+            if (state.cash < p.price) return;
+
+            state.cash -= p.price;
+            state.squad.push({
+                id: "p_" + Math.random().toString(36).substr(2, 7),
+                name: p.name, pos: p.pos, rating: p.rating,
+                fitness: 100, injured: 0, suspended: 0, inEleven: false, isNew: true
+            });
+
+            state.news.unshift({
+                tag: "BOMBNEDSLAG",
+                text: `${state.userClub.name} sprenger banken! Signerer stjernen ${p.name} for ${p.price.toLocaleString()} kr. Velkomstkomité med traktorkortesje på samfunnshuset i kveld!`
+            });
+
+            state.transferMarket.splice(idx, 1);
+            updateHeader();
+            renderTransferTab();
+            renderSquadTable();
+            renderNews();
+        }
+
+        /* ==========================================
+           KLUBBDRIFT & UTENLANDSSPEIDING
+           ========================================== */
+        function renderFacilities() {
+            const list = document.getElementById("facilitiesList");
+            list.innerHTML = "";
+
+            const currentScout = SCOUT_LEVELS[state.scoutLevel] || SCOUT_LEVELS[0];
+            const nextScout = SCOUT_LEVELS[state.scoutLevel + 1];
+
+            const scoutCard = document.createElement("div");
+            scoutCard.className = "retro-box";
+            scoutCard.style.padding = "14px";
+            scoutCard.innerHTML = `
+                <h3 class="retro-title text-cyan" style="font-size:1.05rem;">🕵️‍♂️ Speiderapparatet</h3>
+                <div style="font-size:0.85rem; margin:8px 0;">
+                    Nivå: <strong class="text-gold">${currentScout.name}</strong><br>
+                    <span style="color:var(--fm-muted); font-size:0.8rem;">${currentScout.desc}</span>
+                </div>
+                ${nextScout ? `
+                    <div style="margin-top:12px;">
+                        <button class="nav-btn" style="width:100%; padding: 12px 0;" onclick="upgradeScout()">
+                            Oppgrader til ${nextScout.name}<br>(${nextScout.cost.toLocaleString()} kr)
+                        </button>
+                    </div>
+                ` : '<div class="text-green" style="font-size:0.85rem; margin-top:12px; font-weight:bold;">Maksimalt speidernivå nådd! 🌟</div>'}
+            `;
+            list.appendChild(scoutCard);
+
+            const fCard = document.createElement("div");
+            fCard.className = "retro-box";
+            fCard.style.padding = "14px";
+            fCard.innerHTML = `
+                <h3 class="retro-title text-gold" style="font-size:1.05rem;">☕ Klubbhus & Karsk-apparat</h3>
+                <p style="font-size:0.8rem; color:var(--fm-muted); margin:6px 0 12px 0;">Sørger for topp kok i garderoben og ekstra sponsorstøtte fra lokale helter.</p>
+                <button class="nav-btn" style="width:100%; padding: 12px 0;" onclick="upgradeClubhouse()">Ny kaffetrakter & termos<br>(35 000 kr)</button>
+            `;
+            list.appendChild(fCard);
+
+            const foreignBox = document.getElementById("foreignScoutBox");
+            const foreignText = document.getElementById("foreignScoutStatusText");
+            const foreignBtn = document.getElementById("btnSendForeignScout");
+
+            if (state.scoutLevel >= 2) {
+                foreignBox.classList.remove("hidden");
+                if (state.foreignScoutActive) {
+                    foreignText.innerHTML = `✈️ <strong class="text-gold">Speideren er ute i verden!</strong> Returnerer om <strong>${state.foreignScoutRoundsLeft}</strong> serierunder.`;
+                    foreignBtn.disabled = true; foreignBtn.style.opacity = "0.5";
+                } else if (state.discoveredForeigner) {
+                    foreignText.innerHTML = `🌟 <strong>Supertalent funnet!</strong> Speideren returnerte med <strong>${state.discoveredForeigner.name} (${state.discoveredForeigner.nat})</strong>!`;
+                    foreignBtn.textContent = `Signer supertalentet for ${state.discoveredForeigner.price.toLocaleString()} kr ✍️`;
+                    foreignBtn.disabled = false; foreignBtn.style.opacity = "1";
+                    foreignBtn.onclick = signForeigner;
+                } else {
+                    foreignText.innerHTML = "Send speideren til fjerne himmelstrøk for å hente en uslepen juvel. Tar 3 runder og koster 120 000 kr.";
+                    foreignBtn.textContent = "Send speider utenlands (120 000 kr) 🌍";
+                    foreignBtn.disabled = false; foreignBtn.style.opacity = "1";
+                    foreignBtn.onclick = triggerForeignScoutMission;
+                }
+            } else {
+                foreignBox.classList.add("hidden");
+            }
+        }
+
+        function upgradeScout() {
+            const next = SCOUT_LEVELS[state.scoutLevel + 1];
+            if (!next || state.cash < next.cost) { alert("Ikke nok penger i klubbkassa!"); return; }
+            state.cash -= next.cost; state.scoutLevel++;
+            updateHeader(); renderFacilities(); updateDashboard();
+        }
+
+        function upgradeClubhouse() {
+            if (state.cash < 35000) { alert("For lite midler i kassa!"); return; }
+            state.cash -= 35000;
+            state.news.unshift({ tag: "DUGNAD", text: `${state.userClub.name} har investert i industritrakter! Garderobestemningen når kokepunktet.` });
+            updateHeader(); renderFacilities(); renderNews(); alert("Klubbhuset er oppgradert!");
+        }
+
+        function triggerForeignScoutMission() {
+            if (state.cash < 120000) { alert("Ikke råd til flybilletter og hotell!"); return; }
+            state.cash -= 120000; state.foreignScoutActive = true; state.foreignScoutRoundsLeft = 3;
+            updateHeader(); renderFacilities(); renderTransferTab(); updateDashboard();
+        }
+
+        function signForeigner() {
+            const f = state.discoveredForeigner;
+            if (state.cash < f.price) { alert("Ikke nok midler til signering!"); return; }
+            state.cash -= f.price;
+            state.squad.push({
+                id: "p_" + Math.random().toString(36).substr(2, 7),
+                name: f.name, pos: f.pos, rating: f.rating, fitness: 100, injured: 0, suspended: 0, inEleven: false, isNew: true
+            });
+            state.news.unshift({ tag: "SENSASJON", text: `INTERNASJONAL OVERGANG: ${f.name} fra ${f.nat} har landet på Værnes og signert for ${state.userClub.name}!` });
+            state.discoveredForeigner = null;
+            updateHeader(); renderFacilities(); renderSquadTable(); renderNews();
+        }
+
+        /* ==========================================
+           TABELL & SESONG-RANDOMISERING
+           ========================================== */
+        function renderTable() {
+            const body = document.getElementById("leagueTableBody");
+            body.innerHTML = "";
+            const sorted = [...state.table].sort((a,b) => b.pts - a.pts || (b.gf - b.ga) - (a.gf - a.ga) || b.gf - a.gf);
+            sorted.forEach((t, i) => {
+                const tr = document.createElement("tr");
+                const isMe = state.userClub && t.id === state.userClub.id;
+                if (isMe) tr.style.background = "#18325a";
+                tr.innerHTML = `
+                    <td class="mono">${i+1}</td>
+                    <td style="text-align:left;">${t.logo} <strong>${t.name}</strong></td>
+                    <td class="mono">${t.p}</td>
+                    <td class="mono">${t.w}</td>
+                    <td class="mono">${t.d}</td>
+                    <td class="mono">${t.l}</td>
+                    <td class="mono">${t.gf}-${t.ga}</td>
+                    <td class="mono text-gold"><strong>${t.pts}</strong></td>
+                `;
+                body.appendChild(tr);
+            });
+        }
+
+        function randomizeLeagueStrengths() {
+            state.table.forEach(t => { t.p = 0; t.w = 0; t.d = 0; t.l = 0; t.gf = 0; t.ga = 0; t.pts = 0; });
+            CLUBS.forEach(c => {
+                if(c.id === "rorvik" || c.id === "namsos") { c.rep = 67; } // Erkerivaler settes likt
+                else { c.rep = Math.floor(Math.random() * 7) + 64; }
+            });
+            state.news.unshift({ tag: "NY SESONG", text: "Ny sesong i 5. divisjon sparkes i gang! Styrkeforholdene i distriktet er stokket om etter vinterens dugnader." });
+            renderTable();
+        }
+
+        /* ==========================================
+           DASHBOARD & SPEIDER-ANALYSE
+           ========================================== */
+        function updateDashboard() {
+            document.getElementById("dashRoundNum").textContent = state.round;
+            const otherClubs = CLUBS.filter(c => c.id !== state.userClub.id);
+            const opp = otherClubs[(state.round - 1) % otherClubs.length];
+
+            document.getElementById("dashMatchup").textContent = `${state.userClub.logo} ${state.userClub.name} vs ${opp.name} ${opp.logo}`;
+            document.getElementById("dashStadium").textContent = `Spilles på: ${state.userClub.stadium} (Gress/Myr)`;
+
+            // Speider
+            let scoutText = "";
+            if (state.foreignScoutActive) {
+                scoutText = `✈️ Speideren befinner seg i utlandet med hawaiiskjorte og leter etter supertalenter. Ingen info om ${opp.name}!`;
+            } else {
+                const scoutAccurate = Math.random() < (0.4 + state.scoutLevel * 0.18);
+                const scoutFormation = scoutAccurate ? "4-4-2" : "5-4-1";
+                const advice = scoutFormation === "4-4-2" ? "De sliter hvis vi overmanner dem på midtbanen med 3-5-2!" : "De parkerer bussen, vi må satse på dødballer!";
+                scoutText = `Motstander ${opp.name} forventes å stille i <strong>${scoutFormation}</strong>. ${scoutAccurate ? 'Toppspissen deres halter etter en tømmerulykke.' : 'Speideren kan ha sett feil lag trene, men slik er det.'} <br>💡 <em>Anbefaling: ${advice}</em>`;
+            }
+            document.getElementById("dashScoutText").innerHTML = scoutText;
+
+            // Rådgiver
+            let kareText = `«Husk å sjekke at vi har 11 mann på banen og at karsk-gryta koker!»`;
+            if (!state.trainingDoneThisRound && state.round > 1) {
+                kareText = `⚠️ «Sjef! Gutta har ikke vært på treningsfeltet denne uka! Sett opp en økt før kamp, ellers blir det seige bein!»`;
+            }
+            document.getElementById("dashAdvisorText").innerHTML = kareText;
+        }
+
+        function renderNews() {
+            const feed = document.getElementById("newspaperFeed");
+            feed.innerHTML = "";
+            state.news.slice(0, 4).forEach(n => {
+                const item = document.createElement("div");
+                item.className = "news-item";
+                item.innerHTML = `<span class="news-tag">${n.tag}</span> ${n.text}`;
+                feed.appendChild(item);
+            });
+        }
+
+        /* ==========================================
+           KAMPSIMULATOR MED RIKTIG VARIASJON
+           ========================================== */
+        function startMatch() {
+            const eleven = state.squad.filter(p => p.inEleven);
+            if (eleven.length < 11) {
+                alert("Kåre Slegga skriker: Du må ha 11 mann på banen, sjef!"); return;
+            }
+            if (!state.trainingDoneThisRound && state.round > 1) {
+                alert("Kåre: Vi kan fanken ikke spille kamp uten en eneste trening! Gå til Treningsfeltet først."); return;
+            }
+
+            const otherClubs = CLUBS.filter(c => c.id !== state.userClub.id);
+            const opp = otherClubs[(state.round - 1) % otherClubs.length];
+
+            state.matchSim = {
+                homeTeam: state.userClub.name, homeLogo: state.userClub.logo,
+                awayTeam: opp.name, awayLogo: opp.logo, homeScore: 0, awayScore: 0, minute: 0, timer: null, speed: 150
+            };
+
+            document.getElementById("matchHomeLogo").textContent = state.matchSim.homeLogo;
+            document.getElementById("matchHomeName").textContent = state.matchSim.homeTeam;
+            document.getElementById("matchAwayLogo").textContent = state.matchSim.awayLogo;
+            document.getElementById("matchAwayName").textContent = state.matchSim.awayTeam;
+            document.getElementById("matchScore").textContent = "0 - 0";
+            document.getElementById("matchClock").textContent = "0";
+
+            const log = document.getElementById("matchLogContainer");
+            log.innerHTML = `<div class="log-entry">Avspark er tatt på ${state.userClub.stadium}! Lukta av liniment og karsk brer seg over gressmatta.</div>`;
+
+            // Hvis nysignering starter
+            const debutants = eleven.filter(p => p.isNew);
+            if(debutants.length > 0) {
+                log.innerHTML = `<div class="log-entry" style="color:var(--fm-cyan);">🌟 Spesiell oppmerksomhet mot ${debutants[0].name} som får sin ilddåp for ${state.userClub.name} i dag!</div>` + log.innerHTML;
+            }
+
+            document.getElementById("gameHub").classList.add("hidden");
+            document.getElementById("screenMatch").classList.remove("hidden");
+            document.getElementById("btnFinishMatch").classList.add("hidden");
+            runMatchLoop();
+        }
+
+        function runMatchLoop() {
+            if (state.matchSim.timer) clearInterval(state.matchSim.timer);
+            state.matchSim.timer = setInterval(() => {
+                state.matchSim.minute += 3;
+                document.getElementById("matchClock").textContent = state.matchSim.minute;
+                simulateMatchMinute(state.matchSim.minute);
+                if (state.matchSim.minute >= 90) {
+                    clearInterval(state.matchSim.timer);
+                    finishMatchSimulation();
+                }
+            }, state.matchSim.speed);
+        }
+
+        function simulateMatchMinute(min) {
+            const roll = Math.random();
+            const eleven = state.squad.filter(p => p.inEleven);
+
+            if (roll < 0.055) {
+                state.matchSim.homeScore++;
+                const scorers = eleven.filter(p => p.pos !== "Keeper");
+                const scorer = scorers[Math.floor(Math.random() * scorers.length)] || { name: "Ukjent helt", isNew: false };
+                
+                let goalTxt = `⚽ ${min}' MÅÅÅL! ${scorer.name} klinker til fra 20 meter! Ballen suser inn klistret i vinkelen!`;
+                if(scorer.isNew) goalTxt = `⚽ ${min}' DEBUTANTMÅL!! ${scorer.name} scorer i sin første kamp for ${state.userClub.name} og feirer vilt foran pølsebua!`;
+                else if (Math.random() < 0.3) goalTxt = `⚽ ${min}' MÅÅL! Tofotsfinte av ${scorer.name} som runder keeper og pirker ballen over streken!`;
+                
+                appendMatchLog(goalTxt, "goal"); updateScoreboard();
+            }
+            else if (roll < 0.105) {
+                state.matchSim.awayScore++;
+                const txts = [
+                    `💥 ${min}' BAKLENGS! ${state.matchSim.awayTeam} kontrer lynhurtig og smeller ballen stolpe-inn.`,
+                    `💥 ${min}' BAKLENGS! Klabb og babb etter corner, bortelaget pirker den over streken.`
+                ];
+                appendMatchLog(txts[Math.floor(Math.random() * txts.length)], "goal"); updateScoreboard();
+            }
+            else if (roll < 0.22) {
+                const events = [
+                    `🧤 ${min}' Tigersprell fra målvakten vår! Redder et knallhardt skudd nede ved stolperota.`,
+                    `⚠️ ${min}' Enorme protester! Dommeren overser det som så ut som et soleklart straffespark.`,
+                    `🚜 ${min}' Traktoren på nabojordet ruser motoren i det bortelaget skal ta frispark. Skuddet havner i skogen!`,
+                    `🟨 ${min}' Susende sklitakling på den våte gressmatta. Gult kort.`,
+                    `🦌 ${min}' Kampen pauses i 30 sekunder fordi en liten elgflokk snuser på cornerflagget.`,
+                    `💥 ${min}' KANONSKUDD i tverrliggeren fra distriktets kraftigste fot! Det gjalder i hele dalen.`,
+                    `🧱 ${min}' Vår mann redder på streken med et hodestøt! Mesterlig forsvarsspill.`,
+                    `☕ ${min}' Kåre Slegga roper taktiske instrukser fra benken med karskkoppen hevet.`
+                ];
+                appendMatchLog(events[Math.floor(Math.random() * events.length)], "");
+            }
+        }
+
+        function appendMatchLog(text, typeClass) {
+            const log = document.getElementById("matchLogContainer");
+            const div = document.createElement("div");
+            div.className = "log-entry " + typeClass;
+            div.textContent = text;
+            log.insertBefore(div, log.firstChild);
+        }
+
+        function updateScoreboard() { document.getElementById("matchScore").textContent = `${state.matchSim.homeScore} - ${state.matchSim.awayScore}`; }
+
+        function toggleMatchSpeed() {
+            if (!state.matchSim) return;
+            state.matchSim.speed = state.matchSim.speed === 150 ? 30 : 150;
+            runMatchLoop();
+        }
+
+        function finishMatchSimulation() {
+            appendMatchLog("🏁 90' SLUTT! Dommeren blåser av kampen i distriktet!", "goal");
+            document.getElementById("btnFinishMatch").classList.remove("hidden");
+
+            updateLeagueStats(state.matchSim.homeTeam, state.matchSim.awayTeam, state.matchSim.homeScore, state.matchSim.awayScore);
+            simulateOtherMatches();
+        }
+
+        function updateLeagueStats(t1Name, t2Name, g1, g2) {
+            const t1 = state.table.find(t => t.name === t1Name);
+            const t2 = state.table.find(t => t.name === t2Name);
+            if (!t1 || !t2) return;
+
+            t1.p++; t2.p++; t1.gf += g1; t1.ga += g2; t2.gf += g2; t2.ga += g1;
+            if (g1 > g2) { t1.w++; t1.pts += 3; t2.l++; }
+            else if (g1 === g2) { t1.d++; t1.pts++; t2.d++; t2.pts++; }
+            else { t2.w++; t2.pts += 3; t1.l++; }
+        }
+
+        function simulateOtherMatches() {
+            const others = CLUBS.filter(c => c.name !== state.matchSim.homeTeam && c.name !== state.matchSim.awayTeam);
+            for (let i = 0; i < others.length; i += 2) {
+                if (others[i] && others[i+1]) {
+                    updateLeagueStats(others[i].name, others[i+1].name, Math.floor(Math.random() * 4), Math.floor(Math.random() * 3));
+                }
+            }
+        }
+
+        function concludeMatch() {
+            const gateMoney = Math.floor(Math.random() * 12000) + 15000;
+            state.cash += gateMoney;
+
+            state.squad.forEach(p => {
+                p.isNew = false; // Fjerner debutant-status
+                if (p.inEleven) {
+                    p.fitness = Math.max(20, p.fitness - Math.floor(Math.random() * 12 + 10));
+                    if (Math.random() < 0.05 && p.injured === 0) p.injured = Math.floor(Math.random() * 2) + 1;
+                }
+            });
+
+            if (state.foreignScoutActive) {
+                state.foreignScoutRoundsLeft--;
+                if (state.foreignScoutRoundsLeft <= 0) {
+                    state.foreignScoutActive = false;
+                    const foreigners = [
+                        { name: "Thiago Silva-Hansen", nat: "🇧🇷 Brasil/Namdal", rating: 78, pos: "Angrep", price: 65000 },
+                        { name: "Zlatan fra Skåne", nat: "🇸🇪 Sverige", rating: 76, pos: "Midtbane", price: 55000 },
+                        { name: "Luka Modric-Myra", nat: "🇭🇷 Kroatia", rating: 77, pos: "Midtbane", price: 60000 }
+                    ];
+                    state.discoveredForeigner = foreigners[Math.floor(Math.random() * foreigners.length)];
+                    state.news.unshift({ tag: "SPEIDERNYTT", text: `Sjefsspeideren er hjemme med ${state.discoveredForeigner.name}! Se Klubbdrift.` });
+                }
+            }
+
+            state.news.unshift({ tag: "SLUTTRESULTAT", text: `${state.matchSim.homeTeam} spilte ${state.matchSim.homeScore}-${state.matchSim.awayScore} mot ${state.matchSim.awayTeam}. Billettsalget ga ${gateMoney.toLocaleString()} kr i kassa!` });
+
             state.round++;
+            state.trainingDoneThisRound = false;
             
-            // Velg ny motstander for neste runde med en gang!
-            let availableOpponents = TEAMS.filter(t => t !== state.team);
-            state.nextOpponent = availableOpponents[Math.floor(Math.random() * availableOpponents.length)];
-            
-            for(let i=0; i<5; i++) state.market.push(generatePlayer());
-            updateDashboard(); renderLeagueInfo(); showScreen('screen-league');
+            if (state.round > state.maxRounds) {
+                state.round = 1;
+                randomizeLeagueStrengths();
+            }
+
+            updateDashboard(); updateHeader(); renderTable(); renderNews(); renderTacticsBoard();
+            document.getElementById("screenMatch").classList.add("hidden");
+            document.getElementById("gameHub").classList.remove("hidden");
+            switchTab("dashboard");
         }
-    }
-
-    function updateTable(teamName, gf, ga) {
-        let t = state.leagueTable.find(x => x.name === teamName);
-        if(t) {
-            t.played++; t.gf += gf; t.ga += ga;
-            if (gf > ga) { t.won++; t.points += 3; } else if (gf === ga) { t.drawn++; t.points += 1; } else { t.lost++; }
-        }
-    }
-
-    function renderLeagueInfo() {
-        const tbody = document.getElementById('league-table-body'); tbody.innerHTML = '';
-        state.leagueTable.forEach((t, i) => {
-            const tr = document.createElement('tr');
-            if (t.name === state.team) tr.classList.add('bg-pink-100', 'font-bold');
-            tr.innerHTML = `<td>${i+1}</td><td>${TEAM_LOGOS[t.name] || '⚽'} ${t.name}</td><td>${t.played}</td><td>${t.won}</td><td>${t.drawn}</td><td>${t.lost}</td><td>${t.gf}-${t.ga}</td><td>${t.points}</td>`;
-            tbody.appendChild(tr);
-        });
-        document.getElementById('results-round-num').innerText = state.round > 1 ? (state.round - 1) : 0;
-        const resList = document.getElementById('results-list'); resList.innerHTML = '';
-        if (state.lastResults.length === 0) resList.innerHTML = "<li>Ingen kamper spilt.</li>";
-        else state.lastResults.forEach(r => {
-            const li = document.createElement('li');
-            li.innerText = `${TEAM_LOGOS[r.home] || '⚽'} ${r.home} ${r.hScore} - ${r.aScore} ${r.away} ${TEAM_LOGOS[r.away] || '⚽'}`;
-            resList.appendChild(li);
-        });
-    }
-
-    function showTullballenAwards() {
-        let players = [...state.squad];
-        
-        let pGoals = players.sort((a,b) => b.stats.goals - a.stats.goals)[0];
-        document.getElementById('tull-toppscorer').innerText = pGoals && pGoals.stats.goals > 0 ? `${pGoals.name} (${pGoals.stats.goals} mål)` : "Ingen har scoret...";
-        
-        let pCards = players.sort((a,b) => b.stats.cards - a.stats.cards)[0];
-        document.getElementById('tull-ratass').innerText = pCards && pCards.stats.cards > 0 ? `${pCards.name} (Har mistet besinnelsen totalt)` : "Utrolig nok et fair-play lag!";
-        
-        let pInj = players.sort((a,b) => b.stats.injuries - a.stats.injuries)[0];
-        document.getElementById('tull-porselen').innerText = pInj && pInj.stats.injuries > 0 ? `${pInj.name} (Tråkket i traktorsporet ${pInj.stats.injuries} ganger)` : "Ingen skader? Imponerende medisinsk apparat!";
-        
-        let pAcro = players.sort((a,b) => b.stats.acroGoals - a.stats.acroGoals)[0];
-        document.getElementById('tull-akrobat').innerText = pAcro && pAcro.stats.acroGoals > 0 ? `${pAcro.name} (${pAcro.stats.acroGoals} kunstverk i krysset)` : "Bare kjedelige tap-ins i år.";
-
-        showScreen('screen-tullballen');
-    }
-
-    // --- EVENT LISTENERS ---
-    document.addEventListener('DOMContentLoaded', () => {
-        // initGame() trigges nå via Firebase (eller fallback) i starten!
-        
-        // Dashboard & Navigasjon
-        document.getElementById('btn-save-game').addEventListener('click', () => {
-            if(window.saveGameToCloud) window.saveGameToCloud(state);
-        });
-        
-        document.getElementById('nav-squad').addEventListener('click', () => { renderSquad(); showScreen('screen-squad'); });
-        document.getElementById('nav-transfer').addEventListener('click', () => { renderMarket(); showScreen('screen-transfer'); });
-        document.getElementById('nav-facilities').addEventListener('click', () => { renderFacilities(); showScreen('screen-facilities'); });
-        document.getElementById('nav-league').addEventListener('click', () => { renderLeagueInfo(); showScreen('screen-league'); });
-        
-        document.getElementById('market-filter').addEventListener('change', (e) => { state.marketFilter = e.target.value; renderMarket(); });
-        
-        document.getElementById('btn-play-match').addEventListener('click', startMatch);
-        document.getElementById('btn-sub-tactics').addEventListener('click', pauseMatchForTactics);
-        document.getElementById('btn-back-to-match').addEventListener('click', () => {
-            document.getElementById('formation').value = document.getElementById('match-formation').value;
-            document.getElementById('focus').value = document.getElementById('match-focus').value;
-            document.getElementById('match-log').innerHTML = `<p><em>[${state.matchMinute}'] Treneren legger om taktikken.</em></p>` + document.getElementById('match-log').innerHTML;
-            showScreen('screen-match'); resumeMatch();
-        });
-        document.getElementById('btn-finish-match').addEventListener('click', finishMatch);
-        
-        document.getElementById('btn-auto-pick').addEventListener('click', autoPickBestEleven);
-        document.getElementById('btn-back-squad').addEventListener('click', () => { state.squadSwapIndex = -1; showScreen('screen-dashboard'); });
-        document.getElementById('btn-back-transfer').addEventListener('click', () => showScreen('screen-dashboard'));
-        document.getElementById('btn-back-facilities').addEventListener('click', () => showScreen('screen-dashboard'));
-        document.getElementById('btn-back-league').addEventListener('click', () => showScreen('screen-dashboard'));
-
-        document.getElementById('btn-finish-season').addEventListener('click', () => { 
-            if(window.deleteSaveFromCloud) window.deleteSaveFromCloud();
-            location.reload(); 
-        });
-        
-        // Start på nytt
-        document.getElementById('btn-reset-game').addEventListener('click', () => {
-            document.getElementById('reset-confirm').classList.remove('hidden');
-            document.getElementById('btn-reset-game').classList.add('hidden');
-        });
-        document.getElementById('btn-cancel-reset').addEventListener('click', () => {
-            document.getElementById('reset-confirm').classList.add('hidden');
-            document.getElementById('btn-reset-game').classList.remove('hidden');
-        });
-        document.getElementById('btn-confirm-reset').addEventListener('click', () => { 
-            if(window.deleteSaveFromCloud) window.deleteSaveFromCloud();
-            location.reload(); 
-        });
-    });
-</script>
+    </script>
 </body>
 </html>
